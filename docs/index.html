@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<title>HTML Title</title>
+<style>
+
+	
+
+</style>
+<script>
+	
+	document.addEventListener("DOMContentLoaded", function() {
+		document.body.contentEditable = true;
+	});
+	
+</script>
+<script>
+	
+	document.addEventListener("DOMContentLoaded", function() {
+		
+	});
+	
+</script>
+
+
+<script>
+
+	document.addEventListener("DOMContentLoaded", function() {
+		document.body.contentEditable = true;
+		document.addEventListener("keyup", function() {
+			console.log("" );
+			console.log(document.body.scrollHeight);
+			console.log(window.innerHeight);
+			console.log(window.scrollY);
+			console.log("======");
+		});
+		//console.log(title)
+		title();
+	});
+	
+	function title() {
+		//return document.querySelector('title').innerHTML
+	    document.querySelector("title").innerHTML = "JavaScript Title";
+	};
+	
+	var ready = (callback) => {
+	  if (document.readyState != "loading") callback();
+	  else document.addEventListener("DOMContentLoaded", callback);
+	}
+	
+	ready(() => { 
+	  /* Do things after DOM has fully loaded */ 
+	});
+
+</script>
