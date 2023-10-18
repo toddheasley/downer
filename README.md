@@ -1,6 +1,6 @@
 # Downer
 
-Downer is my personal toolkit for all things [Markdown.](https://daringfireball.net/projects/markdown)
+__[Markdown](https://daringfireball.net/projects/markdown) toolkit for Swift and SwiftUI__
 
 ### Supported Platforms
 

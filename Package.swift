@@ -12,6 +12,9 @@ let package: Package = Package(name: "Downer", platforms: [
         .executable(name: "downer-cli", targets: [
             "DownerCLI"
         ]),
+        .library(name: "DownerUI", targets: [
+            "DownerUI"
+        ]),
         .library(name: "Downer", targets: [
             "Downer"
         ])
@@ -21,6 +24,13 @@ let package: Package = Package(name: "Downer", platforms: [
     ], targets: [
         .executableTarget(name: "DownerCLI", dependencies: [
             .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            "Downer"
+        ]),
+        .target(name: "DownerUI", dependencies: [
+           "Downer"
+        ]),
+        .testTarget(name: "DownerUITests", dependencies: [
+            "DownerUI",
             "Downer"
         ]),
         .target(name: "Downer", dependencies: [
