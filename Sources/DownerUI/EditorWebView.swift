@@ -1,5 +1,6 @@
 import SwiftUI
 import WebKit
+import Downer
 
 struct EditorWebView {
     let stylesheet: Stylesheet
@@ -82,8 +83,9 @@ extension EditorWebView {
                 webView?.evaluateJavaScript("setHTML('\(parent.editor.description.escaped())')")
             case "selectionchange":
                 webView?.evaluateJavaScript("getHTML()") { html, _ in
-                    if let html: String = html as? String {
-                        self.parent.editor.description = html
+                    if let html: String = html as? String,
+                       let document: Downer.Document  = Downer.Document(html, convertHTML: true) {
+                        self.parent.editor.document = document
                     }
                 }
             default:

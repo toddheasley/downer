@@ -81,6 +81,10 @@ body {
     font-family: -apple-system;
 }
 
+img {
+    max-width: 100%;
+}
+
 #editor, #placeholder {
     min-height: calc(100vh - \((padding.top + padding.bottom).styleValue));
     min-width: calc(100vw - \((padding.leading + padding.trailing).styleValue));

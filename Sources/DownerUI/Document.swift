@@ -1,11 +1,13 @@
 import Downer
 
 extension Document {
-    static func convertHTML(_ description: String) -> String {
-        return description
-    }
-    
-    init?(_ description: String, convertHTML: Bool) {
-        self.init(convertHTML ? Self.convertHTML(description) : description)
+    public init?(_ description: String, convertHTML: Bool) {
+        var description: String = description
+        if convertHTML {
+            for conversion in HTML.Conversion.allCases {
+                description = (try? conversion.convert(description)) ?? description
+            }
+        }
+        self.init(description)
     }
 }

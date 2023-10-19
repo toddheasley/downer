@@ -8,25 +8,31 @@ extension HTML {
             return html
         }
         
-        static let codeBlock: Self = .complex("CodeBlock") { html in
-            return html
-        }
+        static let codeBlock: Self = .pattern("CodeBlock", [
+            ("<pre.*?>.*?<code.*?>(.*?)</code>.*?</pre>", "```\n$1\n```\n"),
+            ("<pre.*?>(.*?)</pre>", "```\n$1\n```\n")
+        ])
         
         static let emphasis: Self = .pattern("Emphasis", [
             ("<em.*?>(.*?)</em>", "_$1_"),
-            ("<i.*?>(.*?)</i>", "_$1_")
+            ("<i>(.*?)</i>", "_$1_")
         ])
         
         static let heading: Self = .pattern("Heading", [
-            
+            ("<h6.*?>(.*?)</h6>", "###### $1\n"),
+            ("<h5.*?>(.*?)</h5>", "##### $1\n"),
+            ("<h4.*?>(.*?)</h4>", "#### $1\n"),
+            ("<h3.*?>(.*?)</h3>", "### $1\n"),
+            ("<h2.*?>(.*?)</h2>", "## $1\n"),
+            ("<h1.*?>(.*?)</h1>", "# $1\n")
         ])
         
         static let image: Self = .pattern("Image", [
-            
+            ("<img.*?src=[\"']([^\"']*)[\"'].*?>", "![]($1)")
         ])
         
         static let inlineCode: Self = .pattern("InlineCode", [
-            
+            ("<code.*?>(.*?)</code>", "`$1`")
         ])
         
         static let lineBreak: Self = .pattern("LineBreak", [
@@ -34,26 +40,38 @@ extension HTML {
         ])
         
         static let link: Self = .pattern("Link", [
-            ("<a.*?href=[\"']([^\"']*)[\"'][^>]*>([^<]*)</a>", "[$2]($1)"),
-            ("(\\[\\]\\))([^<]*)(\\))", "[$2]()")
+            ("<a.*?href=[\"']([^\"']*)[\"'][^>]*>(.*?)</a>", "[$2]($1)"),
+            ("(\\[\\]\\()([^\\)]*)(\\))", "[$2]()")
         ])
         
+        static let orderedList: Self = .complex("OrderedList") { html in
+            return html
+        }
+        
         static let paragraph: Self = .pattern("Paragraph", [
-            ("<p.*?>(.*?)</p>", "\n$1\n\n"),
+            ("<p>(.*?)</p>", "\n$1\n\n")
         ])
         
         static let strikethrough: Self = .pattern("Strikethrough", [
-            ("<del.*?>(.*?)</del>", "~~$1~~"),
+            ("<del.*?>(.*?)</del>", "~~$1~~")
         ])
         
         static let strong: Self = .pattern("Strong", [
             ("<strong.*?>(.*?)</strong>", "__$1__"),
-            ("<b.*?>(.*?)</b>", "__$1__")
+            ("<b>(.*?)</b>", "__$1__")
         ])
+        
+        static let table: Self = .complex("Table") { html in
+            return html
+        }
         
         static let thematicBreak: Self = .pattern("ThematicBreak", [
             ("<hr.*?>", "\n-----\n\n")
         ])
+        
+        static let unorderedList: Self = .complex("UnorderedList") { html in
+            return html
+        }
         
         typealias Pattern = (String, template: String)
         typealias Handler = (String) -> String
@@ -73,7 +91,7 @@ extension HTML {
             case .pattern(_, let patterns):
                 var html: HTML = html
                 for pattern in patterns {
-                    html = (try NSRegularExpression(pattern: pattern.0, options: .caseInsensitive)).stringByReplacingMatches(in: html, options: [], range: NSMakeRange(0, html.count), withTemplate: pattern.template)
+                    html = (try NSRegularExpression(pattern: pattern.0, options: [.caseInsensitive, .dotMatchesLineSeparators])).stringByReplacingMatches(in: html, options: [], range: NSMakeRange(0, html.count), withTemplate: pattern.template)
                 }
                 return html
             case .complex(_, let handler):
@@ -82,7 +100,7 @@ extension HTML {
         }
         
         // MARK: CaseIterable
-        static let allCases: [Self] = [.blockQuote, .codeBlock, .emphasis, .heading, .image, .inlineCode, .lineBreak, .link, .paragraph, .strikethrough, .strong, .thematicBreak]
+        static let allCases: [Self] = [.emphasis, .inlineCode, .lineBreak, .link, .strikethrough, .strong, .image] + [.blockQuote, .codeBlock, .heading, .orderedList, .paragraph, .table, .thematicBreak, .unorderedList]
         
         // MARK: Equatable
         static func ==(lhs: Self, rhs: Self) -> Bool {
@@ -90,34 +108,6 @@ extension HTML {
         }
         
         // MARK: CustomStringConvertible
-        var description: String {
-            switch self {
-            case .pattern:
-                return "\(name) (HTML pattern conversion)"
-            case .complex:
-                return "\(name) (HTML complex conversion)"
-            }
-        }
+        var description: String { name }
     }
 }
-
-
-/*
-init(string: String) {
-    let patterns: [(String, String)] = [
-        ("(^|\\s)/([\\w\\-\\.!~#?&=+\\*'\"(),\\/]+).(m4a|mp3)", "$1<audio src=\"$2.$3\" preload=\"metadata\" controls>"), // Embed local audio
-        ("(^|\\s)/([\\w\\-\\.!~#?&=+\\*'\"(),\\/]+).(m4v|mov|mp4)", "$1<video src=\"$2.$3\" preload=\"metadata\" controls>"), // Embed local video
-        ("(^|\\s)/([\\w\\-\\.!~#?&=+\\*'\"(),\\/]+).(png|gif|jpg|jpeg)", "$1<a href=\"$2.$3\"><img src=\"$2.$3\"></a>"), // Embed local images
-        ("(https?:\\/\\/)([\\w\\-\\.!~?&+\\*'\"(),\\/]+)", "<a href=\"$1$2\">$2</a>"), // Hyperlink absolute URLs
-        ("(^|\\s)/([\\w\\-\\.!~#?&=+\\*'\"(),\\/]+)", "$1<a href=\"$2\">$2</a>"), // Hyperlink relative URIs
-        ("(^|\\s)([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4})", "$1<a href=\"mailto:$2\">$2</a>"), // Hyperlink email addresses
-        ("(^|\\s)@([a-z0-9_]+)", "$1<a href=\"https://twitter.com/$2\">@$2</a>"), // Hyperlink Twitter names
-        ("(^|\\s)#([a-z0-9_]+)", "$1<a href=\"https://twitter.com/search?q=%23$2&src=hash\">#$2</a>") // Hyperlink Twitter hashtags
-    ]
-    var HTML = string
-    for pattern in patterns {
-        HTML = (try! NSRegularExpression(pattern: pattern.0, options: NSRegularExpression.Options.caseInsensitive)).stringByReplacingMatches(in: HTML as String, options: [], range: NSMakeRange(0, HTML.count), withTemplate: pattern.1)
-    }
-    HTML = HTML.replacingOccurrences(of: "\n", with: "<br>")
-    self = HTML
-} */
