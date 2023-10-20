@@ -1,17 +1,18 @@
 import SwiftUI
 
-struct Stylesheet: CustomStringConvertible {
-    static let `default`: Self = Self("Default", description: defaultDescription())
+public struct Stylesheet: CustomStringConvertible {
+    public static let `default`: Self = Self("Downer Default", description: defaultDescription())
+    public static let webkit: Self = Self("WebKit Default", description: "")
     
-    let name: String
+    public let name: String
     
-    init(_ name: String, description: String) {
+    public init(_ name: String, description: String) {
         self.name = name
         self.description = description
     }
     
     // MARK: CustomStringConvertible
-    let description: String
+    public let description: String
 }
 
 protocol StyleRepresentable {
@@ -74,19 +75,27 @@ private func defaultDescription(padding: EdgeInsets = .default) -> String { """
 }
 
 a {
-    color: -apple-system-red;
+    /* color: -apple-system-red; */
 }
 
 body {
     font-family: -apple-system;
+    font: -apple-system-body;
+}
+
+blockquote, h2, h3, h4, h5, h6, hr, ol, p, table, uo {
+    margin: 0.5em 0;
 }
 
 img {
     max-width: 100%;
 }
 
-#editor, #placeholder {
+#editor {
     min-height: calc(100vh - \((padding.top + padding.bottom).styleValue));
+}
+
+#editor, #placeholder {
     min-width: calc(100vw - \((padding.leading + padding.trailing).styleValue));
     padding: \(padding.styleValue);
     position: absolute;

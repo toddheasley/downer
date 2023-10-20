@@ -2,36 +2,54 @@ import SwiftUI
 import Downer
 
 protocol EditorDelegate {
-    
+    func createLink(_ href: URL)
+    func insertImage(_ src: URL)
+    func insertOrderedList()
+    func insertUnorderedList()
+    func linkActivated(_ href: URL)
+    func toggleBold()
+    func toggleItalic()
+    func toggleStrikethrough()
+    func toggleUnderline()
 }
 
-@Observable class Editor: CustomStringConvertible {
+@Observable public class Editor: CustomStringConvertible {
+    public var document: Downer.Document
+    public var baseURL: URL?
+    
     var delegate: EditorDelegate?
-    var document: Downer.Document
-    var baseURL: URL?
     
-    func open(url: URL) throws {
-        
+    func linkActivated(_ href: URL?) {
+        guard let href else { return }
+        delegate?.linkActivated(href)
     }
     
-    func description(_ format: Format) -> String {
-        return description
-    }
-    
-    convenience init?(_ description: String, baseURL: URL? = nil) {
+    public convenience init?(_ description: String, baseURL: URL? = nil) {
         guard let document: Downer.Document = Downer.Document(description) else {
             return nil
         }
         self.init(document, baseURL: baseURL)
     }
     
-    init(_ document: Downer.Document = "", baseURL: URL? = nil) {
+    public init(_ document: Downer.Document = "", baseURL: URL? = nil) {
         self.document = document
         self.baseURL = baseURL
     }
     
     // MARK: CustomStringConvertible
-    var description: String {
+    public var description: String {
         return document.description
     }
 }
+#if canImport(Cocoa) || canImport(UIKit)
+
+extension EditorDelegate {
+    func linkActivated(_ href: URL) {
+#if canImport(Cocoa)
+        NSWorkspace.shared.open(href)
+#elseif canImport(UIKit)
+        UIApplication.shared.open(href)
+#endif
+    }
+}
+#endif

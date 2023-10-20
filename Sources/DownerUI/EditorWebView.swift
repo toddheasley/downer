@@ -14,13 +14,36 @@ struct EditorWebView {
     }
     
     @Environment(Editor.self) private var editor: Editor
-    @Environment(\.openURL) private var openURL
     private let name: String = "editor"
 }
 
 extension EditorWebView {
-    class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
+    class Coordinator: NSObject, EditorDelegate, WKNavigationDelegate, WKScriptMessageHandler {
         var webView: WKWebView?
+        
+        init(_ parent: EditorWebView) {
+            self.parent = parent
+            super.init()
+        }
+        
+        private let parent: EditorWebView
+        
+        // MARK: EditorDelegate
+        func createLink(_ href: URL) {
+            webView?.evaluateJavaScript("createLink('\(href.absoluteString)')")
+        }
+        
+        func insertImage(_ src: URL) {
+            webView?.evaluateJavaScript("insertImage('\(src.absoluteString)')");
+        }
+        
+        func insertOrderedList() {
+            webView?.evaluateJavaScript("insertOrderedList()");
+        }
+        
+        func insertUnorderedList() {
+            webView?.evaluateJavaScript("insertUnorderedList()");
+        }
         
         func toggleBold() {
             webView?.evaluateJavaScript("toggleBold()");
@@ -38,41 +61,16 @@ extension EditorWebView {
             webView?.evaluateJavaScript("toggleUnderline()");
         }
         
-        func createLink(href: URL) {
-            webView?.evaluateJavaScript("createLink('\(href.absoluteString)')")
-        }
-        
-        func insertOrderedList() {
-            webView?.evaluateJavaScript("insertOrderedList()");
-        }
-        
-        func insertUnorderedList() {
-            webView?.evaluateJavaScript("insertUnorderedList()");
-        }
-        
-        func insertImage(src: URL) {
-            webView?.evaluateJavaScript("insertImage('\(src.absoluteString)')");
-        }
-        
-        init(_ parent: EditorWebView) {
-            self.parent = parent
-            super.init()
-        }
-        
-        private let parent: EditorWebView
-        
         // MARK: WKNavigationDelegate
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
             switch navigationAction.navigationType {
             case .linkActivated:
-                if let url: URL = navigationAction.request.url {
-                    parent.openURL(url)
-                }
+                parent.editor.linkActivated(navigationAction.request.url)
                 return .cancel
             case .other, .reload:
                 return .allow // Allow content loading
             default:
-                return .cancel // Cancel navigation and form (re)submission
+                return .cancel // Cancel navigation
             }
         }
         
@@ -80,16 +78,17 @@ extension EditorWebView {
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
             switch message.body as? String {
             case "load":
-                webView?.evaluateJavaScript("setHTML('\(parent.editor.description.escaped())')")
+                let html: String = parent.editor.document.description(.hypertext)
+                webView?.evaluateJavaScript("setHTML('\(html.escaped())')");
             case "selectionchange":
                 webView?.evaluateJavaScript("getHTML()") { html, _ in
-                    if let html: String = html as? String,
-                       let document: Downer.Document  = Downer.Document(html, convertHTML: true) {
-                        self.parent.editor.document = document
+                    guard let html: String = html as? String,
+                          let document: Downer.Document  = Downer.Document(html, convertHTML: true) else {
+                        return
                     }
+                    self.parent.editor.document = document
                 }
             default:
-                print("*** \(message.body as? String ?? "nil")")
                 break
             }
         }
@@ -105,6 +104,9 @@ extension EditorWebView: UIViewRepresentable {
         webView.configuration.userContentController.add(context.coordinator, name: name)
         webView.navigationDelegate = context.coordinator
         context.coordinator.webView = webView
+        editor.delegate = context.coordinator
+        webView.backgroundColor = .clear
+        webView.isOpaque = false
         return webView
     }
     
@@ -126,6 +128,9 @@ extension EditorWebView: NSViewRepresentable {
         webView.configuration.userContentController.add(context.coordinator, name: name)
         webView.navigationDelegate = context.coordinator
         context.coordinator.webView = webView
+        editor.delegate = context.coordinator
+        webView.underPageBackgroundColor = .clear
+        webView.setValue(false, forKey: "drawsBackground") // isOpaque
         return webView
     }
     
@@ -147,7 +152,7 @@ extension EditorWebView: NSViewRepresentable {
 private func EditorHTML(_ name: String, stylesheet: Stylesheet, placeholder: String = "", isEditable: Bool = true) -> String { """
 <!DOCTYPE html>
 <meta charset="UTF-8">
-<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <style>
 
 \(stylesheet)
@@ -155,7 +160,7 @@ private func EditorHTML(_ name: String, stylesheet: Stylesheet, placeholder: Str
 </style>
 <p id="placeholder" disabled>\(placeholder)</p>
 <div id="\(name)" spellcheck="false"\(isEditable ? " contenteditable" : "")>
-
+    
 </div>
 <script>
     
@@ -273,6 +278,6 @@ private extension String {
                 return Self(char)
             }
             return Self(char.escaped(asASCII: true))
-        }.joined()
+        }.joined().replacingOccurrences(of: "\u{FEFF}", with: "")
     }
 }
