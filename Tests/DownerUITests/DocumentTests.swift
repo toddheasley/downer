@@ -8,18 +8,11 @@ final class DocumentTests: XCTestCase {
 
 extension DocumentTests {
     func testDescriptionInit() throws {
-        XCTAssertEqual(Downer.Document(document.html, convertHTML: true)?.description, document.converted)
+        XCTAssertEqual(Downer.Document(document.html, convertHTML: true)!.description, document.converted)
     }
 }
 
 private let document: (html: HTML, converted: String) = ("""
-
-""", """
-
-""")
-
-
-private let html: String = """
 <h1>Markdown Document</h1>
 <p><a href="markdown-image.svg"><img src="markdown-image.svg" alt="Markdown image"></a></p>
 <h2>Think different</h2>
@@ -35,25 +28,6 @@ private let html: String = """
     <p>And while some may see them as the crazy ones, we see genius. Because the people who are crazy enough to think they can change the world, are the ones who do.</p>
     <p><a href="https://apple.com">Think different</a></p>
 </blockquote>
-<hr>
-<h2>Hypertext</h2>
-<p>For example, to add an HTML <code>&lt;table&gt;</code> to a <a href="https://daringfireball.net/projects/markdown">Markdown</a> article:</p>
-<pre>
-This is a regular paragraph.
-
-&lt;table&gt;
-    &lt;tr&gt;
-        &lt;td&gt;Foo&lt;/td&gt;
-    &lt;/tr&gt;
-&lt;/table&gt;
-
-This is another regular paragraph.
-</pre>
-<table>
-    <tr>
-        <td>Foo</td>
-    </tr>
-</table>
 <hr>
 <table>
     <tr>
@@ -76,8 +50,37 @@ This is another regular paragraph.
     <li><input type="checkbox" disabled checked> Lists</li>
 </ul>
 
-"""
+""", """
+\u{FEFF}# Markdown Document
 
-// ("(https?:\\/\\/)([\\w\\-\\.!~?&+\\*'\"(),\\/]+)", "<a href=\"$1$2\">$2</a>"), // Hyperlink absolute URLs
-// ("(^|\\s)/([\\w\\-\\.!~#?&=+\\*'\"(),\\/]+)", "$1<a href=\"$2\">$2</a>"), // Hyperlink relative URIs
-// ("(^|\\s)([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4})", "$1<a href=\"mailto:$2\">$2</a>"), // Hyperlink email addresses
+[![](markdown-image.svg)](markdown-image.svg)
+
+## Think different
+
+> Here’s to the crazy ones.
+>
+> 1. The misfits
+> 2. The rebels
+> 3. The _troublemakers_
+>
+> The round pegs in the square holes. The ones who see things differently. They’re not fond of rules. And they have no respect for the status quo. You can `quote` them, ~~disagree~~ with them, glorify or vilify them. <span>About the only thing you can’t do is ignore them.</span> Because they change things.
+>
+> __They push the human race forward__.
+>
+> And while some may see them as the crazy ones, we see genius. Because the people who are crazy enough to think they can change the world, are the ones who do.
+>
+> [Think different](https://apple.com)
+
+-----
+
+| Reference | Link |
+| --- | --- |
+| GitHub Flavored Markdown | [gfm](https://github.github.com/gfm) |
+| Daring Fireball | [https://daringfireball.net/projects/markdown](https://daringfireball.net/projects/markdown) |
+
+###### Things I __hate__
+
+* [ ] ~~Vandalism~~
+* [x] _Irony_
+* [x] Lists
+""")

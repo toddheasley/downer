@@ -83,10 +83,6 @@ body {
     font: -apple-system-body;
 }
 
-blockquote, h2, h3, h4, h5, h6, hr, ol, p, table, uo {
-    margin: 0.5em 0;
-}
-
 img {
     max-width: 100%;
 }

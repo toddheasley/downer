@@ -7,8 +7,7 @@ final class HTMLTests: XCTestCase {
 
 extension HTMLTests {
     func testBlockQuoteConversion() throws {
-        // XCTAssertEqual(try HTML.Conversion.blockQuote.convert(blockQuote.html), blockQuote.converted)
-        XCTFail("HTML.Conversion.blockQuote has not been implemented")
+        XCTAssertEqual(try HTML.Conversion.blockQuote.convert(blockQuote.html), blockQuote.converted)
     }
     
     func testCodeBlockConversion() throws {
@@ -40,8 +39,7 @@ extension HTMLTests {
     }
     
     func testOrderedListConversion() throws {
-        // XCTAssertEqual(try HTML.Conversion.orderedList.convert(orderedList.html), orderedList.converted)
-        XCTFail("HTML.Conversion.orderedList has not been implemented")
+        XCTAssertEqual(try HTML.Conversion.orderedList.convert(orderedList.html), orderedList.converted)
     }
     
     func testParagraphConversion() throws {
@@ -57,8 +55,11 @@ extension HTMLTests {
     }
     
     func testTableConversion() {
-        // XCTAssertEqual(try HTML.Conversion.table.convert(table.html), table.converted)
-        XCTFail("HTML.Conversion.table has not been implemented")
+        XCTAssertEqual(try HTML.Conversion.table.convert(table.html), table.converted)
+    }
+    
+    func testTaskListConversion() {
+        XCTAssertEqual(try HTML.Conversion.taskList.convert(taskList.html), taskList.converted)
     }
     
     func testThematicBreakConversion() {
@@ -66,22 +67,42 @@ extension HTMLTests {
     }
     
     func testUnorderedListConversion() throws {
-        // XCTAssertEqual(try HTML.Conversion.unorderedList.convert(unorderedList.html), unorderedList.converted)
-        XCTFail("HTML.Conversion.unorderedList has not been implemented")
+        XCTAssertEqual(try HTML.Conversion.unorderedList.convert(unorderedList.html), unorderedList.converted)
+    }
+    
+    func testLeafBlocks() {
+        XCTAssertEqual(HTML.Conversion.leafBlocks.count, 14)
+    }
+    
+    func testContainerBlocks() {
+        XCTAssertEqual(HTML.Conversion.containerBlocks.count, 1)
+    }
+    
+    func testInlines() {
+        XCTAssertEqual(HTML.Conversion.inlines.count, 10)
     }
     
     // MARK: CaseIterable
     func testConversionAllCases() {
-        XCTAssertEqual(HTML.Conversion.allCases.count, 15)
-        XCTAssertEqual(HTML.Conversion.allCases, [.emphasis, .inlineCode, .lineBreak, .link, .strikethrough, .strong, .image, .blockQuote, .codeBlock, .heading, .orderedList, .paragraph, .table, .thematicBreak, .unorderedList])
+        XCTAssertEqual(HTML.Conversion.allCases.count, 25)
     }
 }
 
 private typealias Conversion = (html: HTML, converted: String)
 
 private let blockQuote: Conversion = ("""
-
+<blockquote>
+    <p>Markdown uses email-style characters for blockquoting.
+    </p>
+    <p>Multiple paragraphs need to be prepended individually.
+    </p>
+</blockquote>
 """, """
+
+> <p>Markdown uses email-style characters for blockquoting.
+> </p>
+> <p>Multiple paragraphs need to be prepended individually.
+> </p>
 
 """)
 
@@ -158,14 +179,22 @@ private let lineBreak: Conversion = ("""
 """)
 
 private let link: Conversion = ("""
-<p><b>Markdown</b> is a <a title="Lightweight markup language"href='/wiki/Lightweight_markup_language'>lightweight markup language</a> for creating <a href="/wiki/Formatted_text" title="Formatted text"></a> using a <a href="https://en.wikipedia.org/wiki/Text_editor" title="Text editor">plain-text editor</a>.</p>
+<p><b>![](//upload.wikimedia.org/wikipedia/commons/thumb/4/48/Markdown-mark.svg/175px-Markdown-mark.svg.png)</b> is a <a title="Lightweight markup language"href='/wiki/Lightweight_markup_language'>lightweight markup language</a> for creating <a href="/wiki/Formatted_text" title="Formatted text"></a> using a <a href="https://en.wikipedia.org/wiki/Text_editor" title="Text editor">plain-text editor</a>.</p>
 """, """
-<p><b>Markdown</b> is a [lightweight markup language](/wiki/Lightweight_markup_language) for creating [/wiki/Formatted_text]() using a [plain-text editor](https://en.wikipedia.org/wiki/Text_editor).</p>
+<p><b>![](//upload.wikimedia.org/wikipedia/commons/thumb/4/48/Markdown-mark.svg/175px-Markdown-mark.svg.png)</b> is a [lightweight markup language](/wiki/Lightweight_markup_language) for creating [/wiki/Formatted_text]() using a [plain-text editor](https://en.wikipedia.org/wiki/Text_editor).</p>
 """)
 
 private let orderedList: Conversion = ("""
-
+<ol>
+<li>foo</li>
+<li></li>
+<li>bar</li>
+</ol>
 """, """
+
+1. foo
+2. 
+3. bar
 
 """)
 
@@ -188,9 +217,38 @@ private let strong: Conversion = ("""
 """)
 
 private let table: Conversion = ("""
-
+<table>
+    <thead>
+    <tr>
+    <th>foo</th><th>bar</th></tr>
+    </thead>
+<tbody>
+    <tr>
+        <td>baz</td>
+        <td>bim</td>
+    </tr>
+</tbody>
+</table>
 """, """
 
+| foo | bar
+| --- | ---
+| baz | bim
+
+""")
+
+private let taskList: Conversion = ("""
+<ul>
+    <li><input type="checkbox" checked> foo</li>
+    <li><input checked="true" disabled="" type='checkbox'></li>
+    <li><input type="checkbox">bar</li>
+</ul>
+""", """
+<ul>
+    <li>[x]  foo</li>
+    <li>[x] </li>
+    <li>[ ] bar</li>
+</ul>
 """)
 
 private let thematicBreak: Conversion = ("""
@@ -200,7 +258,15 @@ private let thematicBreak: Conversion = ("""
 """)
 
 private let unorderedList: Conversion = ("""
-
+<ul>
+<li>foo</li>
+<li></li>
+<li>bar</li>
+</ul>
 """, """
+
+* foo
+* 
+* bar
 
 """)
