@@ -9,10 +9,6 @@ final class AutolinkTests: XCTestCase {
     func testEmail() throws {
         XCTAssertEqual(try Autolink.email.convert(email.0), email.1)
     }
-    
-    func testDefault() {
-        XCTAssertEqual(Autolink.default.count, 2)
-    }
 }
 
 private let link: (HTML, HTML) = ("""

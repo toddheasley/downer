@@ -145,7 +145,9 @@ And while some may see them as the crazy ones, we see genius. Because the people
 
 #### BYO Autolinks
 
-`Autolink.link` and `.email` are the two included autolinking rules. They only cover the least fuzzy cases where plain-text web and email addresses are prefixed with `http:`, `https:` or `mailto:` protocols. They illustrate how to apply your own custom links:
+`Autolink.link` and `.email` are the two included autolinking rules. They cover only the least fuzzy cases where plain-text web and email addresses are prefixed with `http:`, `https:` or `mailto:` protocols.
+
+Autolink at your own risk:
 
 ```swift
 extension Autolink: CaseIterable {
