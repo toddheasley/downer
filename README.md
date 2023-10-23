@@ -148,16 +148,12 @@ And while some may see them as the crazy ones, we see genius. Because the people
 `Autolink.link` and `.email` are the two included autolinking rules. They only cover the least fuzzy cases where plain-text web and email addresses are prefixed with `http:`, `https:` or `mailto:` protocols. They illustrate how to apply your own custom links:
 
 ```swift
-import Downer
-
 extension Autolink: CaseIterable {
     static let fileLink: Self = Self("File", "(?<!\")(file:\\/\\/\\/)([\\w\\-\\.!~?&+\\*'\"(),\\/]+)", "<a href=\"$1$2\">$2</a>")
-    
-    // MARK: CaseIterable
-    public static let allCases: [Self] = [.link, .fileLink]
+    static let allCases: [Self] = [.link, .fileLink]
 }
 
-let html: String = Document("").description(.hypertext(Autolink.allCases + [
+let html: String = document.description(.hypertext(Autolink.allCases + [
     Autolink("Path", "(^|\\s)/([\\w\\-\\.!~#?&=+\\*'\"(),\\/]+)", "$1<a href=\"$2\">$2</a>")
 ]))
 ```
