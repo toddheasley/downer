@@ -24,6 +24,7 @@ let package: Package = Package(name: "Downer", platforms: [
     ], targets: [
         .executableTarget(name: "DownerCLI", dependencies: [
             .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            "DownerUI",
             "Downer"
         ]),
         .target(name: "DownerUI", dependencies: [

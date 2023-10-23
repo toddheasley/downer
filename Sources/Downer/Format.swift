@@ -1,31 +1,41 @@
 import UniformTypeIdentifiers
 
-public enum Format: String, CaseIterable, CustomStringConvertible {
-    case markdown, hypertext
+public enum Format: CaseIterable, CustomStringConvertible {
+    case hypertext(_ autolink: [Autolink]), markdown
+    
+    public static let hypertext: Self = .hypertext([])
     
     public var contentType: UTType {
         switch self {
-        case .markdown:
-            return .markdown
         case .hypertext:
             return .hypertext
+        case .markdown:
+            return .markdown
         }
     }
     
     public init?(contentType: UTType) {
         switch contentType {
-        case .markdown:
-            self = .markdown
         case .hypertext:
             self = .hypertext
+        case .markdown:
+            self = .markdown
         default:
             return nil
         }
     }
     
+    // MARK: CaseIterable
+    public static let allCases: [Self] = [.hypertext, .markdown]
+    
     // MARK: CustomStringConvertible
     public var description: String {
-        return rawValue
+        switch self {
+        case .hypertext:
+            return "hypertext"
+        case .markdown:
+            return "markdown"
+        }
     }
 }
 

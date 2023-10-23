@@ -4,7 +4,7 @@ __[Markdown](https://daringfireball.net/projects/markdown) toolkit for Swift and
 
 ### Supported Platforms
 
-Written in [Swift](https://developer.apple.com/documentation/swift) 5.9 for Apple stuff:
+Written in [Swift](https://developer.apple.com/swift) 5.9 for Apple stuff:
 
 * [macOS](https://developer.apple.com/macos) 14 Sonoma
 * [iOS](https://developer.apple.com/ios)/[iPadOS](https://developer.apple.com/ipad)/[tvOS](https://developer.apple.com/tvos) 17
@@ -13,44 +13,50 @@ Written in [Swift](https://developer.apple.com/documentation/swift) 5.9 for Appl
 
 Build with [Xcode](https://developer.apple.com/xcode) 15 or newer. Command-line interface depends on [Swift Argument Parser.](https://github.com/apple/swift-argument-parser)
 
-## Live Preview Dingus
+## WYSIWYG Edtor
 
 ![](docs/downer.png)
 
 ## Command-Line Interface
 
-`Downer` package includes `downer-cli`, an executable target for processing individual Markdown files. Given a path to almost any text file, `downer-cli` creates both HTML and formatted Markdown versions, preserving the source file:
+`Downer` package includes `downer-cli`, an executable target for processing individual Markdown files. Given a path to any text file, `downer-cli` creates both HTML and formatted Markdown versions, preserving the source file:
 
 ```zsh
-toddheasley Desktop % ls
+toddheasley % ls
 README.md
-toddheasley Desktop % downer-cli README.md 
+toddheasley % ./downer-cli README.md 
 Saved: README~.md
 Saved: README.html
-toddheasley Desktop % ls
+toddheasley % ls
 README.html	README.md	README~.md
+```
+
+Use `--convert` to convert HTML in source file to Markdown syntax when possible:
+
+```zsh
+toddheasley % ./downer-cli README.md -c
 ```
 
 Use `--replace` to overwrite the source file:
 
 ```zsh
-toddheasley Desktop % ls
+toddheasley % ls
 README.md
-toddheasley Desktop % downer-cli README.md -r
+toddheasley % ./downer-cli README.md -r
 Saved: README.md
 Saved: README.html
-toddheasley Desktop % ls
+toddheasley % ls
 README.html	README.md
 ```
 
 Use `--format` to generate only one format or the other:
 
 ```zsh
-toddheasley Desktop % ls
+toddheasley % ls
 README.md
-toddheasley Desktop % downer-cli README.md -f hypertext
+toddheasley % ./downer-cli README.md -f hypertext
 Saved: README.html
-toddheasley Desktop % ls
+toddheasley % ls
 README.html	README.md
 ```
 
@@ -58,14 +64,35 @@ README.html	README.md
 
 ### Markdown Syntax
 
-`Downer` parses [GitHub Flavored Markdown](https://github.github.com/gfm) using [cmark-gfm.](https://github.com/github/cmark-gfm) It will handle any mixture of random syntax thrown at it, but it’s weird and opinionated about a handful of things that I’m weird and opinionated about. Beware the following deviations from normal Markdown behavior:
+`Downer` parses [GitHub Flavored Markdown](https://github.github.com/gfm) using [cmark-gfm.](https://github.com/github/cmark-gfm) It mostly behaves like you'd expect, but it's weird and opinionated about a handful of things that I'm weird and opinionated about. Specifically:
 
-* [List items](https://github.github.com/gfm/#list-items) are considered leaf blocks. When list items contain multiple child blocks, only the inline content from the first child block is selected. Additional blocks are discarded.
-* Hypertext format renders [strong emphasis](https://github.github.com/gfm/#emphasis-and-strong-emphasis) with HTML `<b>` tags, instead of `<strong>`.
+* [List items](https://github.github.com/gfm/#list-items) are leaf blocks. When list items contain multiple child blocks, only the inline content from the first child block is selected. Additional blocks are discarded. 
 * [Link reference definitions](https://github.github.com/gfm/#link-reference-definitions) are ignored _and_ discarded during parsing.
-* Support for [Flavored autolinks](https://github.github.com/gfm/#autolinks-extension-) is omitted. Future releases may introduce non-standard autolinking as hypertext formatting options.
+* Hypertext format renders [strong emphasis](https://github.github.com/gfm/#emphasis-and-strong-emphasis) with HTML `<b>` tags, instead of `<strong>`.
+* Basic support for [Flavored autolinks](https://github.github.com/gfm/#autolinks-extension-) is included but disabled by default.
 
 Other Flavored extensions for [strikethrough](https://github.github.com/gfm/#strikethrough-extension-), [tables](https://github.github.com/gfm/#tables-extension-) and [task lists](https://github.github.com/gfm/#task-list-items-extension-) are fully supported.
+
+#### BYO Autolinks
+
+Autolinking is an affordance for the end user. Ideally, autolinking is done by a set of appropriate data detectors specified in a [WebKit](https://github.com/WebKit/WebKit) configuration. _Ideally_.
+
+`Autolink.link` and `.email` are the two included autolinking rules. They only cover the least fuzzy cases where plain-text web and email addresses are prefixed with `http:`, `https:` or `mailto:` protocols. They illustrate how to apply your own custom links:
+
+```swift
+import Downer
+
+extension Autolink: CaseIterable {
+    static let fileLink = Self("File", "(?<!\")(file:\\/\\/\\/)([\\w\\-\\.!~?&+\\*'\"(),\\/]+)", "<a href=\"$1$2\">$2</a>")
+    
+    // MARK: CaseIterable
+    public static let allCases: [Self] = [.link, .fileLink]
+}
+
+let html: String = Document("").description(.hypertext(Autolink.allCases + [
+    Autolink("Path", "(^|\\s)/([\\w\\-\\.!~#?&=+\\*'\"(),\\/]+)", "$1<a href=\"$2\">$2</a>")
+]))
+```
 
 ### Examples
 

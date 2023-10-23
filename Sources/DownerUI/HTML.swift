@@ -4,8 +4,8 @@ typealias HTML = String
 
 extension HTML.Conversion: CaseIterable {
     static let blockQuote: Self = .modifier("<blockquote.*?>(.*?)</blockquote>") { html in
-        var html: HTML = try! HTML.Conversion.template("<blockquote.*?>(.*?)</blockquote>", "$1").convert(html).trimmed()
-        html = html.components(separatedBy: "\n").map { $0.isEmpty ? ">" : "> \($0.trimmed())" }.joined(separator: "\n")
+        var html: HTML = try! HTML.Conversion.template("<blockquote.*?>(.*?)</blockquote>", "$1").convert(html).trimmingCharacters(in: .whitespacesAndNewlines)
+        html = html.components(separatedBy: "\n").map { $0.isEmpty ? ">" : "> \($0.trimmingCharacters(in: .whitespacesAndNewlines))" }.joined(separator: "\n")
         return "\n\(html)\n"
     }
     
@@ -126,7 +126,7 @@ extension HTML {
     }
 }
 
-extension Array where Element == HTML.Conversion {
+extension [HTML.Conversion] {
     func convert(_ html: HTML) throws -> String {
         var html: HTML = html
         for conversion in self {

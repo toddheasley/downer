@@ -38,8 +38,4 @@ extension String {
             return "\(self[range.lowerBound..<range.upperBound])"
         }
     }
-    
-    func trimmed() -> Self {
-        return trimmingCharacters(in: .whitespacesAndNewlines)
-    }
 }

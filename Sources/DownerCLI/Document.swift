@@ -1,5 +1,6 @@
 import Foundation
 import UniformTypeIdentifiers
+import DownerUI
 import Downer
 
 extension Document {
@@ -9,9 +10,9 @@ extension Document {
         return url.lastPathComponent
     }
     
-    init(path: String) throws {
+    init(path: String, convertHTML: Bool = false) throws {
         let url: URL = try URL(file: path)
-        guard let document: Self = Self(try String(contentsOf: url)) else {
+        guard let document: Self = Self(try String(contentsOf: url), convertHTML: convertHTML) else {
             throw Error.decodingFailed
         }
         self = document
