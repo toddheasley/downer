@@ -73,27 +73,6 @@ README.html	README.md
 
 Other Flavored extensions for [strikethrough](https://github.github.com/gfm/#strikethrough-extension-), [tables](https://github.github.com/gfm/#tables-extension-) and [task lists](https://github.github.com/gfm/#task-list-items-extension-) are fully supported.
 
-#### BYO Autolinks
-
-Autolinking is an affordance for the end user. Ideally, autolinking is done by a set of appropriate data detectors specified in a [WebKit](https://github.com/WebKit/WebKit) configuration. _Ideally_.
-
-`Autolink.link` and `.email` are the two included autolinking rules. They only cover the least fuzzy cases where plain-text web and email addresses are prefixed with `http:`, `https:` or `mailto:` protocols. They illustrate how to apply your own custom links:
-
-```swift
-import Downer
-
-extension Autolink: CaseIterable {
-    static let fileLink = Self("File", "(?<!\")(file:\\/\\/\\/)([\\w\\-\\.!~?&+\\*'\"(),\\/]+)", "<a href=\"$1$2\">$2</a>")
-    
-    // MARK: CaseIterable
-    public static let allCases: [Self] = [.link, .fileLink]
-}
-
-let html: String = Document("").description(.hypertext(Autolink.allCases + [
-    Autolink("Path", "(^|\\s)/([\\w\\-\\.!~#?&=+\\*'\"(),\\/]+)", "$1<a href=\"$2\">$2</a>")
-]))
-```
-
 ### Examples
 
 `Downer` adopts the same document structure and element naming conventions as its underlying parser, [Swift Markdown.](https://github.com/apple/swift-markdown) Elements are re-parsed into self-rendering, concrete types:
@@ -162,4 +141,23 @@ The round pegs in the square holes. The ones who see things differently. They’
 __They push the human race forward__.
 
 And while some may see them as the crazy ones, we see genius. Because the people who are crazy enough to think they can change the world, are the ones who do.
+```
+
+#### BYO Autolinks
+
+`Autolink.link` and `.email` are the two included autolinking rules. They only cover the least fuzzy cases where plain-text web and email addresses are prefixed with `http:`, `https:` or `mailto:` protocols. They illustrate how to apply your own custom links:
+
+```swift
+import Downer
+
+extension Autolink: CaseIterable {
+    static let fileLink: Self = Self("File", "(?<!\")(file:\\/\\/\\/)([\\w\\-\\.!~?&+\\*'\"(),\\/]+)", "<a href=\"$1$2\">$2</a>")
+    
+    // MARK: CaseIterable
+    public static let allCases: [Self] = [.link, .fileLink]
+}
+
+let html: String = Document("").description(.hypertext(Autolink.allCases + [
+    Autolink("Path", "(^|\\s)/([\\w\\-\\.!~#?&=+\\*'\"(),\\/]+)", "$1<a href=\"$2\">$2</a>")
+]))
 ```
