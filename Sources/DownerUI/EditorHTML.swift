@@ -22,8 +22,21 @@ func EditorHTML(_ name: String, stylesheet: Stylesheet, placeholder: String = ""
         window.webkit.messageHandlers.\(name).postMessage(message);
     }
     
-    const togglePlaceholder = function() {
-        placeholder.style.display = isEmpty() ? "block" : "none";
+    const createLink = function(href) {
+        document.execCommand("createLink", false, href);
+    }
+    
+    const insertImage = function(src) {
+        postMessage("insertImage");
+        document.execCommand("InsertImage", false, src);
+    }
+    
+    const insertOrderedList = function() {
+        document.execCommand("insertOrderedList", false, null);
+    }
+    
+    const insertUnorderedList = function() {
+        document.execCommand("insertUnorderedList", false, null);
     }
     
     const toggleBold = function() {
@@ -38,25 +51,17 @@ func EditorHTML(_ name: String, stylesheet: Stylesheet, placeholder: String = ""
         document.execCommand("strikethrough", false, null);
     }
     
-    const toggleUnderline = function() {
-        document.execCommand("underline", false, null);
+    const togglePlaceholder = function() {
+        placeholder.style.display = isEmpty() ? "block" : "none";
     }
     
-    const createLink = function(href) {
-        document.execCommand("createLink", false, href);
+    const setHTML = function(html) {
+        editor.innerHTML = html;
+        togglePlaceholder();
     }
     
-    const insertOrderedList = function() {
-        document.execCommand("insertOrderedList", false, null);
-    }
-    
-    const insertUnorderedList = function() {
-        document.execCommand("insertUnorderedList", false, null);
-    }
-    
-    const insertImage = function(src) {
-        postMessage("insertImage");
-        document.execCommand("InsertImage", false, src);
+    const getHTML = function() {
+        return editor.innerHTML;
     }
     
     const getState = function() {
@@ -88,15 +93,6 @@ func EditorHTML(_ name: String, stylesheet: Stylesheet, placeholder: String = ""
         return JSON.stringify(state);
     }
     
-    const setHTML = function(html) {
-        editor.innerHTML = html;
-        togglePlaceholder();
-    }
-    
-    const getHTML = function() {
-        return editor.innerHTML;
-    }
-    
     const isEmpty = function() {
         return editor.innerText.trim().length == 0;
     }
@@ -111,6 +107,10 @@ func EditorHTML(_ name: String, stylesheet: Stylesheet, placeholder: String = ""
             postMessage("selectionchange");
             togglePlaceholder();
         }
+    });
+
+    editor.addEventListener("paste", function() {
+        postMessage("paste");
     });
     
     editor.addEventListener("input", function() {

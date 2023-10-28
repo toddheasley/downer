@@ -1,8 +1,12 @@
 import SwiftUI
 
 public struct Stylesheet: CustomStringConvertible {
-    public static let `default`: Self = Self("Downer Default", description: defaultDescription())
     public static let webkit: Self = Self("WebKit Default", description: "")
+    public static let `default`: Self = .default(.default)
+    
+    public static func `default`(_ padding: EdgeInsets) -> Self {
+        return Self("Downer Default", description: _description(padding: padding))
+    }
     
     public let name: String
     
@@ -15,7 +19,7 @@ public struct Stylesheet: CustomStringConvertible {
     public let description: String
 }
 
-private func defaultDescription(padding: EdgeInsets = .default) -> String { """
+private func _description(padding: EdgeInsets = .default) -> String { """
 :root {
     -webkit-text-size-adjust: none;
     color-scheme: light dark;

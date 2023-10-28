@@ -29,3 +29,11 @@ extension EdgeInsets: StyleRepresentable {
         }
     }
 }
+
+extension CGFloat: StyleRepresentable {
+    
+    // StyleRepresentable
+    var styleValue: String {
+        return self == 0.0 ? "0" : "\(self)px".replacingOccurrences(of: ".0p", with: "p")
+    }
+}

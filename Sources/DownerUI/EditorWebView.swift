@@ -57,10 +57,6 @@ extension EditorWebView {
             webView?.evaluateJavaScript("toggleStrikethrough()");
         }
         
-        func toggleUnderline() {
-            webView?.evaluateJavaScript("toggleUnderline()");
-        }
-        
         private func getState(clicked: Bool = false) {
             webView?.evaluateJavaScript("getState()") { json, _ in
                 guard let json: String = json as? String,
@@ -112,6 +108,8 @@ extension EditorWebView {
                 getState()
             case "click":
                 getState(clicked: true)
+            case "paste":
+                break
             case "input":
                 getHTML()
             default:
@@ -147,8 +145,6 @@ extension EditorWebView: UIViewRepresentable {
 
 private class WebView: WKWebView {
     let _inputAccessoryView: UIView = UIView()
-    
-    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

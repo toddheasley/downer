@@ -10,7 +10,6 @@ protocol EditorDelegate {
     func toggleBold()
     func toggleItalic()
     func toggleStrikethrough()
-    func toggleUnderline()
 }
 
 @Observable public class Editor: CustomStringConvertible {

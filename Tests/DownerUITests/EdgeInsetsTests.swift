@@ -16,3 +16,17 @@ extension EdgeInsetsTests {
         XCTAssertEqual(EdgeInsets().styleValue, "0")
     }
 }
+
+final class CGFloatTests: XCTestCase {
+    
+}
+
+extension CGFloatTests {
+    
+    // MARK: StyleRepresentable
+    func testStyleValue() {
+        XCTAssertEqual(CGFloat(43.667).styleValue, "43.667px")
+        XCTAssertEqual(CGFloat(-20.0).styleValue, "-20px")
+        XCTAssertEqual(CGFloat(0.0).styleValue, "0")
+    }
+}
