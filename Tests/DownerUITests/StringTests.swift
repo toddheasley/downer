@@ -23,6 +23,10 @@ extension StringTests {
             "<em>(c. 2002)</em>"
         ])
     }
+    
+    func testEscapedForEval() {
+        
+    }
 }
 
 private let template: (String, String) = ("""

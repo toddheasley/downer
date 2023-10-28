@@ -38,4 +38,13 @@ extension String {
             return "\(self[range.lowerBound..<range.upperBound])"
         }
     }
+    
+    func escapedForEval() -> Self {
+        return self.unicodeScalars.map { char in
+            guard (char.value < 32 && char.value != 9) || char.value == 39 else {
+                return Self(char)
+            }
+            return Self(char.escaped(asASCII: true))
+        }.joined().replacingOccurrences(of: "\u{FEFF}", with: "")
+    }
 }

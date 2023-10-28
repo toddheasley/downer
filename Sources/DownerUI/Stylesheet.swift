@@ -15,55 +15,6 @@ public struct Stylesheet: CustomStringConvertible {
     public let description: String
 }
 
-protocol StyleRepresentable {
-    var styleValue: String { get }
-    init?(style value: String)
-}
-
-extension StyleRepresentable {
-    init?(style value: String) {
-        fatalError("init(style:) has not been implemented")
-    }
-}
-
-extension EdgeInsets: StyleRepresentable {
-    static var `default`: Self {
-#if os(macOS)
-        return Self(8.0, 10.0, 8.0, 11.0)
-#else
-        return Self(8.0)
-#endif
-    }
-    
-    init(_ top: CGFloat = 0.0, _ leading: CGFloat = 0.0, _ bottom: CGFloat = 0.0, _ trailing: CGFloat = 0.0) {
-        self.init(top: top, leading: leading, bottom: bottom, trailing: trailing)
-    }
-    
-    init(_ all: CGFloat) {
-        self.init(all, all, all, all)
-    }
-    
-    // StyleRepresentable
-    var styleValue: String {
-        let values: [String] = [top, trailing, bottom, leading].map { $0.styleValue }
-        if values[0] == values[1], values[0] == values[2], values[0] == values[3] {
-            return values[0]
-        } else if values[0] == values[2], values[1] == values[3] {
-            return values[0...1].joined(separator: " ")
-        } else {
-            return values.joined(separator: " ")
-        }
-    }
-}
-
-extension CGFloat: StyleRepresentable {
-    
-    // StyleRepresentable
-    var styleValue: String {
-        return self == 0.0 ? "0" : "\(self)px".replacingOccurrences(of: ".0p", with: "p")
-    }
-}
-
 private func defaultDescription(padding: EdgeInsets = .default) -> String { """
 :root {
     -webkit-text-size-adjust: none;
@@ -74,13 +25,24 @@ private func defaultDescription(padding: EdgeInsets = .default) -> String { """
     margin: 0;
 }
 
-a {
-    /* color: -apple-system-red; */
+a:link {
+    cursor: pointer;
 }
 
 body {
+    color: -apple-system-label;
     font-family: -apple-system;
     font: -apple-system-body;
+}
+
+code {
+    background: -apple-system-quaternary-label;
+    border-radius: 6px;
+    padding: 3px 6px 2px 6px;
+}
+
+h1, h2, h3, h4, h5, h6, hr, ol, p, pre, table, ul {
+    margin-bottom: \(padding.bottom.styleValue);
 }
 
 img {
@@ -102,6 +64,6 @@ img {
 }
 
 #placeholder {
-    color: gray;
+    color: -apple-system-placeholder-text;
 }
 """ }

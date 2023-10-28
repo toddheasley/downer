@@ -61,6 +61,35 @@ extension EditorWebView {
             webView?.evaluateJavaScript("toggleUnderline()");
         }
         
+        private func getState(clicked: Bool = false) {
+            webView?.evaluateJavaScript("getState()") { json, _ in
+                guard let json: String = json as? String,
+                      let data: Data = json.data(using: .utf8),
+                      let state: Editor.State = try? JSONDecoder().decode(Editor.State.self, from: data) else {
+                    return
+                }
+                self.parent.editor.state = state
+                if clicked {
+                    self.parent.editor.linkActivated()
+                }
+            }
+        }
+        
+        private func getHTML() {
+            webView?.evaluateJavaScript("getHTML()") { html, _ in
+                guard let html: String = html as? String,
+                      let document: Downer.Document  = Downer.Document(html, convertHTML: true) else {
+                    return
+                }
+                self.parent.editor.document = document
+            }
+        }
+        
+        private func setHTML() {
+            let html: String = parent.editor.document.description(.hypertext)
+            webView?.evaluateJavaScript("setHTML('\(html.escapedForEval())')");
+        }
+        
         // MARK: WKNavigationDelegate
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
             switch navigationAction.navigationType {
@@ -78,16 +107,13 @@ extension EditorWebView {
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
             switch message.body as? String {
             case "load":
-                let html: String = parent.editor.document.description(.hypertext)
-                webView?.evaluateJavaScript("setHTML('\(html.escaped())')");
+                setHTML()
             case "selectionchange":
-                webView?.evaluateJavaScript("getHTML()") { html, _ in
-                    guard let html: String = html as? String,
-                          let document: Downer.Document  = Downer.Document(html, convertHTML: true) else {
-                        return
-                    }
-                    self.parent.editor.document = document
-                }
+                getState()
+            case "click":
+                getState(clicked: true)
+            case "input":
+                getHTML()
             default:
                 break
             }
@@ -100,7 +126,7 @@ extension EditorWebView: UIViewRepresentable {
     
     // MARK: UIViewRepresentable
     func makeUIView(context: Context) -> WKWebView {
-        let webView: WKWebView = WKWebView()
+        let webView: WKWebView = WebView()
         webView.configuration.userContentController.add(context.coordinator, name: name)
         webView.navigationDelegate = context.coordinator
         context.coordinator.webView = webView
@@ -116,6 +142,28 @@ extension EditorWebView: UIViewRepresentable {
     
     func makeCoordinator() -> Coordinator {
         return Coordinator(self)
+    }
+}
+
+private class WebView: WKWebView {
+    let _inputAccessoryView: UIView = UIView()
+    
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: WKWebView
+    override var inputAccessoryView: UIView? {
+        return _inputAccessoryView
+    }
+    
+    override init(frame: CGRect, configuration: WKWebViewConfiguration) {
+        super.init(frame: frame, configuration: configuration)
+        
+        _inputAccessoryView.backgroundColor = .red.withAlphaComponent(0.5)
+        _inputAccessoryView.frame.size.height = 44.0
     }
 }
 
@@ -147,137 +195,4 @@ extension EditorWebView: NSViewRepresentable {
 #Preview("Editor Web View") {
     EditorWebView(placeholder: "Placeholder")
         .environment(Editor())
-}
-
-private func EditorHTML(_ name: String, stylesheet: Stylesheet, placeholder: String = "", isEditable: Bool = true) -> String { """
-<!DOCTYPE html>
-<meta charset="UTF-8">
-<meta name="viewport" content="initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<style>
-
-\(stylesheet)
-
-</style>
-<p id="placeholder" disabled>\(placeholder)</p>
-<div id="\(name)" spellcheck="false"\(isEditable ? " contenteditable" : "")>
-    
-</div>
-<script>
-    
-    "use strict";
-    
-    let editor = document.getElementById("editor");
-    let placeholder = document.getElementById("placeholder")
-    let selectionchangeMuted = false;
-    let focused = false;
-
-    const postMessage = function(message) {
-        window.webkit.messageHandlers.\(name).postMessage(message);
-    }
-    
-    const togglePlaceholder = function() {
-        placeholder.style.display = isEmpty() ? "block" : "none";
-    }
-    
-    const toggleBold = function() {
-        document.execCommand("bold", false, null);
-    }
-    
-    const toggleItalic = function() {
-        document.execCommand("italic", false, null);
-    }
-    
-    const toggleStrikethrough = function() {
-        document.execCommand("strikethrough", false, null);
-    }
-    
-    const toggleUnderline = function() {
-        document.execCommand("underline", false, null);
-    }
-    
-    const createLink = function(href) {
-        document.execCommand("createLink", false, href);
-    }
-    
-    const insertOrderedList = function() {
-        document.execCommand("insertOrderedList", false, null);
-    }
-    
-    const insertUnorderedList = function() {
-        document.execCommand("insertUnorderedList", false, null);
-    }
-    
-    const insertImage = function(src) {
-        postMessage("insertImage");
-        document.execCommand("InsertImage", false, src);
-    }
-    
-    const setHTML = function(html) {
-        editor.innerHTML = html;
-        togglePlaceholder();
-    }
-    
-    const getHTML = function() {
-        return editor.innerHTML;
-    }
-    
-    const isEmpty = function() {
-        return (editor.innerText.length == 0 || editor.innerText == "\\n");
-    }
-
-    window.addEventListener("load", function() {
-        postMessage("load");
-        togglePlaceholder();
-    });
-    
-    document.addEventListener("selectionchange", function(event) {
-        if (!selectionchangeMuted) {
-            postMessage("selectionchange");
-            togglePlaceholder();
-        }
-    });
-
-    editor.addEventListener("focus", function() {
-        focused = true;
-    });
-    
-    editor.addEventListener("blur", function() {
-        focused = false;
-    });
-    
-    editor.addEventListener("touchstart", function() {
-        selectionchangeMuted = true;
-    });
-    
-    editor.addEventListener("touchcancel", function() {
-        postMessage("selectionchange");
-        selectionchangeMuted = false;
-    });
-    
-    editor.addEventListener("touchend", function() {
-        postMessage("selectionchange");
-        selectionchangeMuted = false;
-    });
-    
-    editor.addEventListener("mousedown", function() {
-        selectionchangeMuted = true;
-    });
-    
-    editor.addEventListener("mouseup", function() {
-        postMessage("selectionchange");
-        selectionchangeMuted = false;
-    });
-    
-</script>
-""" }
-
-private extension String {
-    func escaped() -> Self {
-        return self.unicodeScalars.map { char in
-            guard (char.value < 32 && char.value != 9) || char.value == 39 else {
-                return Self(char)
-            }
-            return Self(char.escaped(asASCII: true))
-        }.joined().replacingOccurrences(of: "\u{FEFF}", with: "")
-    }
 }
