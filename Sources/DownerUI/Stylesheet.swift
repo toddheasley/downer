@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct Stylesheet: CustomStringConvertible {
-    public static let webkit: Self = Self("WebKit Default", description: "")
+    public static let webkit: Self = Self("WebKit", description: "")
     public static let `default`: Self = .default(.default)
     
     public static func `default`(_ padding: EdgeInsets) -> Self {
@@ -17,6 +17,10 @@ public struct Stylesheet: CustomStringConvertible {
     
     // MARK: CustomStringConvertible
     public let description: String
+}
+
+protocol StyleConvertible {
+    var styleDescription: String { get }
 }
 
 private func _description(padding: EdgeInsets = .default) -> String { """
@@ -46,7 +50,7 @@ code {
 }
 
 h1, h2, h3, h4, h5, h6, hr, ol, p, pre, table, ul {
-    margin-bottom: \(padding.bottom.styleValue);
+    margin-bottom: \(padding.bottom.styleDescription);
 }
 
 img {
@@ -54,12 +58,12 @@ img {
 }
 
 #editor {
-    min-height: calc(100vh - \((padding.top + padding.bottom).styleValue));
+    min-height: calc(100vh - \((padding.top + padding.bottom).styleDescription));
 }
 
 #editor, #placeholder {
-    min-width: calc(100vw - \((padding.leading + padding.trailing).styleValue));
-    padding: \(padding.styleValue);
+    min-width: calc(100vw - \((padding.leading + padding.trailing).styleDescription));
+    padding: \(padding.styleDescription);
     position: absolute;
 }
 

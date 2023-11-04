@@ -13,9 +13,30 @@ Written in [Swift](https://developer.apple.com/swift) 5.9 for Apple stuff:
 
 Build with [Xcode](https://developer.apple.com/xcode) 15 or newer. Command-line interface depends on [Swift Argument Parser.](https://github.com/apple/swift-argument-parser)
 
-## WYSIWYG Edtor
+## WYSIWYG Editor
 
 ![](docs/downer.png)
+
+`EditorView` is a SwiftUI 
+
+```swift
+import SwiftUI
+import DownerUI
+import Downer
+
+struct ContentView: View {
+    @State private var editor: Editor = Editor(document, baseURL: baseURL)
+    
+    var body: some View {
+        EditorView("Placeholder")
+            .editorToolbar()
+            .environment(editor)
+            .onChange(of: editor.document) {
+                print(editor.document)
+            }
+    }
+}
+```
 
 ## Command-Line Interface
 

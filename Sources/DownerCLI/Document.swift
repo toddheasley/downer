@@ -29,7 +29,7 @@ extension Document.Error: CustomStringConvertible {
         case .generic(let description):
             return description
         default:
-            fatalError()
+            fatalError("description has not been implemented")
         }
     }
 }

@@ -2,18 +2,57 @@ import SwiftUI
 import Downer
 
 protocol EditorDelegate {
-    func createLink(_ href: URL)
-    func insertImage(_ src: URL)
-    func insertOrderedList()
-    func insertUnorderedList()
-    func linkActivated(_ href: URL)
-    func toggleBold()
-    func toggleItalic()
-    func toggleStrikethrough()
+    func exec(_ action: Editor.Action)
+    func open(_ url: URL)
+    func focus()
 }
 
 @Observable public class Editor: CustomStringConvertible {
-    public struct Link: Decodable {
+    public enum Action: Equatable, CaseIterable, CustomStringConvertible {
+        case createLink(_ href: URL? = nil)
+        case insertImage(_ src: URL? = nil), insertOrderedList, insertUnorderedList
+        case toggleBold, toggleItalic, toggleStrikethrough
+        
+        public static let `default`: [Self] = [
+            .createLink(),
+            .toggleBold,
+            .toggleItalic,
+            .toggleStrikethrough
+        ]
+        
+        // MARK: CaseIterable
+        public static let allCases: [Self] = [
+            .createLink(),
+            .insertImage(),
+            .insertOrderedList,
+            .insertUnorderedList,
+            .toggleBold,
+            .toggleItalic,
+            .toggleStrikethrough
+        ]
+        
+        // MARK: CustomStringConvertible
+        public var description: String {
+            switch self {
+            case .createLink:
+                return "create link…"
+            case .insertImage:
+                return "insert image…"
+            case .insertOrderedList:
+                return "insert numbered list"
+            case .insertUnorderedList:
+                return "insert bulleted list"
+            case .toggleBold:
+                return "toggle bold"
+            case .toggleItalic:
+                return "toggle italic"
+            case .toggleStrikethrough:
+                return "toggle strike"
+            }
+        }
+    }
+    
+    public struct Link: Decodable, CustomStringConvertible {
         public let text: String
         public let href: URL
         
@@ -34,6 +73,14 @@ protocol EditorDelegate {
         
         private enum Key: CodingKey {
             case text, href
+        }
+        
+        // MARK: CustomStringConvertible
+        public var description: String {
+            guard !text.isEmpty else {
+                return "[\(href.absoluteString)]()"
+            }
+            return "[\(text)](\(href.absoluteString))"
         }
     }
     
@@ -74,19 +121,36 @@ protocol EditorDelegate {
         public let isFocused: Bool
     }
     
-    public internal(set) var state: State?
+    public private(set) var isFocused: Bool = false
     public var document: Downer.Document
     public var baseURL: URL?
     
-    var delegate: EditorDelegate?
-    
-    func linkActivated(_ href: URL?) {
-        guard let href else { return }
-        delegate?.linkActivated(href)
+    public internal(set) var state: State? {
+        didSet {
+            isFocused = state?.isFocused ?? false
+        }
     }
     
-    func linkActivated() {
-        linkActivated(state?.selection.link?.href)
+    public func exec(_ action: Action) {
+        delegate?.exec(action)
+    }
+    
+    public func focus() {
+        delegate?.focus()
+    }
+    
+    public func blur() {
+#if canImport(UIKit)
+        UIApplication.shared.blur()
+#else
+        fatalError("blur() has not been implemented")
+#endif
+    }
+    
+    var delegate: EditorDelegate?
+    
+    func open(_ url: URL) {
+        delegate?.open(url)
     }
     
     public convenience init?(_ description: String, baseURL: URL? = nil) {
@@ -108,13 +172,21 @@ protocol EditorDelegate {
 }
 
 extension EditorDelegate {
-    func linkActivated(_ href: URL) {
+    func open(_ url: URL) {
 #if canImport(Cocoa)
-        NSWorkspace.shared.open(href)
+        NSWorkspace.shared.open(url)
 #elseif canImport(UIKit)
-        UIApplication.shared.open(href)
+        UIApplication.shared.open(url)
 #else
-        fatalError("linkActivated(_ href:) has not been implemented")
+        fatalError("open(_ url:) has not been implemented")
 #endif
     }
 }
+#if canImport(UIKit)
+
+private extension UIApplication {
+    func blur() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+#endif

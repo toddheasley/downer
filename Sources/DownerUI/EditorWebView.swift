@@ -3,14 +3,14 @@ import WebKit
 import Downer
 
 struct EditorWebView {
-    let stylesheet: Stylesheet
     let placeholder: String
-    let isEditible: Bool
+    let stylesheet: Stylesheet
+    let isEditable: Bool
     
-    init(_ stylesheet: Stylesheet = .default, placeholder: String = "", isEditable: Bool = true) {
-        self.stylesheet = stylesheet
+    init(_ placeholder: String = "", stylesheet: Stylesheet = .default, isEditable: Bool = true) {
         self.placeholder = placeholder
-        self.isEditible = isEditable
+        self.stylesheet = stylesheet
+        self.isEditable = isEditable
     }
     
     @Environment(Editor.self) private var editor: Editor
@@ -29,44 +29,40 @@ extension EditorWebView {
         private let parent: EditorWebView
         
         // MARK: EditorDelegate
-        func createLink(_ href: URL) {
-            webView?.evaluateJavaScript("createLink('\(href.absoluteString)')")
+        func exec(_ action: Editor.Action) {
+            switch action {
+            case .createLink(let href):
+                guard let href else { break }
+                webView?.evaluateJavaScript("createLink('\(href.absoluteString)')")
+            case .insertImage(let src):
+                guard let src else { break }
+                webView?.evaluateJavaScript("insertImage('\(src.absoluteString)')")
+            case .insertOrderedList:
+                webView?.evaluateJavaScript("insertOrderedList()")
+            case .insertUnorderedList:
+                webView?.evaluateJavaScript("insertUnorderedList()")
+            case .toggleBold:
+                webView?.evaluateJavaScript("toggleBold()")
+            case .toggleItalic:
+                webView?.evaluateJavaScript("toggleItalic()")
+            case .toggleStrikethrough:
+                webView?.evaluateJavaScript("toggleStrikethrough()")
+            }
         }
         
-        func insertImage(_ src: URL) {
-            webView?.evaluateJavaScript("insertImage('\(src.absoluteString)')");
+        func focus() {
+            webView?.evaluateJavaScript("focusEditor()")
         }
         
-        func insertOrderedList() {
-            webView?.evaluateJavaScript("insertOrderedList()");
-        }
-        
-        func insertUnorderedList() {
-            webView?.evaluateJavaScript("insertUnorderedList()");
-        }
-        
-        func toggleBold() {
-            webView?.evaluateJavaScript("toggleBold()");
-        }
-        
-        func toggleItalic() {
-            webView?.evaluateJavaScript("toggleItalic()");
-        }
-        
-        func toggleStrikethrough() {
-            webView?.evaluateJavaScript("toggleStrikethrough()");
-        }
-        
-        private func getState(clicked: Bool = false) {
+        private func getState(_ handler: ((Editor.State?) -> Void)? = nil) {
             webView?.evaluateJavaScript("getState()") { json, _ in
-                guard let json: String = json as? String,
-                      let data: Data = json.data(using: .utf8),
-                      let state: Editor.State = try? JSONDecoder().decode(Editor.State.self, from: data) else {
-                    return
-                }
-                self.parent.editor.state = state
-                if clicked {
-                    self.parent.editor.linkActivated()
+                if let json: String = json as? String,
+                   let data: Data = json.data(using: .utf8),
+                   let state: Editor.State = try? JSONDecoder().decode(Editor.State.self, from: data) {
+                    self.parent.editor.state = state
+                    handler?(state)
+                } else {
+                    handler?(nil)
                 }
             }
         }
@@ -89,11 +85,13 @@ extension EditorWebView {
         // MARK: WKNavigationDelegate
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
             switch navigationAction.navigationType {
-            case .linkActivated:
-                parent.editor.linkActivated(navigationAction.request.url)
-                return .cancel
             case .other, .reload:
                 return .allow // Allow content loading
+            case .linkActivated:
+                if let url = navigationAction.request.url {
+                    parent.editor.open(url)
+                }
+                fallthrough
             default:
                 return .cancel // Cancel navigation
             }
@@ -104,10 +102,13 @@ extension EditorWebView {
             switch message.body as? String {
             case "load":
                 setHTML()
-            case "selectionchange":
+            case "blur", "selectionchange":
                 getState()
             case "click":
-                getState(clicked: true)
+                getState { state in
+                    guard let url: URL = state?.selection.link?.href else { return }
+                    self.open(url)
+                }
             case "paste":
                 break
             case "input":
@@ -135,7 +136,7 @@ extension EditorWebView: UIViewRepresentable {
     }
     
     func updateUIView(_ webView: WKWebView, context: Context) {
-        webView.loadHTMLString(EditorHTML(name, stylesheet: stylesheet, placeholder: placeholder, isEditable: isEditible), baseURL: editor.baseURL)
+        webView.loadHTMLString(EditorHTML(name, stylesheet: stylesheet, placeholder: placeholder, isEditable: isEditable), baseURL: editor.baseURL)
     }
     
     func makeCoordinator() -> Coordinator {
@@ -144,22 +145,10 @@ extension EditorWebView: UIViewRepresentable {
 }
 
 private class WebView: WKWebView {
-    let _inputAccessoryView: UIView = UIView()
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     // MARK: WKWebView
     override var inputAccessoryView: UIView? {
-        return _inputAccessoryView
-    }
-    
-    override init(frame: CGRect, configuration: WKWebViewConfiguration) {
-        super.init(frame: frame, configuration: configuration)
-        
-        _inputAccessoryView.backgroundColor = .red.withAlphaComponent(0.5)
-        _inputAccessoryView.frame.size.height = 44.0
+        return nil
     }
 }
 
@@ -189,6 +178,6 @@ extension EditorWebView: NSViewRepresentable {
 
 #endif
 #Preview("Editor Web View") {
-    EditorWebView(placeholder: "Placeholder")
+    EditorWebView("Placeholder")
         .environment(Editor())
 }
