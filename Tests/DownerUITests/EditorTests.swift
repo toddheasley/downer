@@ -2,6 +2,10 @@ import XCTest
 @testable import DownerUI
 
 final class EditorTests: XCTestCase {
+    
+}
+
+extension EditorTests {
     func testActionDefault() {
         XCTAssertEqual(Editor.Action.default, [
             .createLink(),
@@ -20,7 +24,15 @@ final class EditorTests: XCTestCase {
             .insertUnorderedList,
             .toggleBold,
             .toggleItalic,
-            .toggleStrikethrough
+            .toggleStrikethrough,
+            .createBlockquote,
+            .createHeading(),
+            .insertCheckbox,
+            .insertCodeBlock,
+            .insertLineBreak,
+            .insertTable(),
+            .insertThemeBreak,
+            .toggleCode
         ])
     }
     
@@ -33,7 +45,23 @@ final class EditorTests: XCTestCase {
         XCTAssertEqual(Editor.Action.toggleBold.description, "toggle bold")
         XCTAssertEqual(Editor.Action.toggleItalic.description, "toggle italic")
         XCTAssertEqual(Editor.Action.toggleStrikethrough.description, "toggle strike")
+        XCTAssertEqual(Editor.Action.createBlockquote.description, "create blockquote")
+        XCTAssertEqual(Editor.Action.createHeading(0).description, "create #0 heading")
+        XCTAssertEqual(Editor.Action.createHeading(6).description, "create #6 heading")
+        XCTAssertEqual(Editor.Action.createHeading(7).description, "create #7 heading")
+        XCTAssertEqual(Editor.Action.createHeading().description, "create #1 heading")
+        XCTAssertEqual(Editor.Action.insertCheckbox.description, "insert checkbox")
+        XCTAssertEqual(Editor.Action.insertCodeBlock.description, "insert code block")
+        XCTAssertEqual(Editor.Action.insertLineBreak.description, "insert line break")
+        XCTAssertEqual(Editor.Action.insertTable(4, 3).description, "insert 3x4 table")
+        XCTAssertEqual(Editor.Action.insertTable(2).description, "insert 1x2 table")
+        XCTAssertEqual(Editor.Action.insertTable().description, "insert table")
+        XCTAssertEqual(Editor.Action.insertThemeBreak.description, "insert theme break")
+        XCTAssertEqual(Editor.Action.toggleCode.description, "toggle code")
     }
+}
+
+extension EditorTests {
     
     // MARK: Decodable
     func testLinkDecoderInit() throws {

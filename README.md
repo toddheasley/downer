@@ -13,7 +13,10 @@ Written in [Swift](https://developer.apple.com/swift) 5.9 for Apple stuff:
 
 Build with [Xcode](https://developer.apple.com/xcode) 15 or newer. Command-line interface depends on [Swift Argument Parser.](https://github.com/apple/swift-argument-parser)
 
-## WYSIWYG Editor
+## WYSIWYG WIP ![EXPERIMENTAL](docs/experimental-large.svg)
+
+
+
 
 ![](docs/downer.png)
 
@@ -38,7 +41,12 @@ struct ContentView: View {
 }
 ```
 
+
+
+
 ## Command-Line Interface
+
+__File-based processing for Mac workflows__
 
 `Downer` package includes `downer-cli`, an executable target for processing individual Markdown files. Given a path to any text file, `downer-cli` creates both HTML and formatted Markdown versions, preserving the source file:
 
@@ -52,7 +60,7 @@ toddheasley % ls
 README.html	README.md	README~.md
 ```
 
-Use `--convert` to convert HTML in source file to Markdown syntax when possible:
+![EXPERIMENTAL](docs/experimental-small.svg) Use `--convert` to convert HTML in source file to Markdown syntax when possible:
 
 ```zsh
 toddheasley % ./downer-cli README.md -c
@@ -90,7 +98,7 @@ README.html	README.md
 * [List items](https://github.github.com/gfm/#list-items) are leaf blocks. When list items contain multiple child blocks, only the inline content from the first child block is selected. Additional blocks are discarded. 
 * [Link reference definitions](https://github.github.com/gfm/#link-reference-definitions) are ignored _and_ discarded during parsing.
 * Hypertext format renders [strong emphasis](https://github.github.com/gfm/#emphasis-and-strong-emphasis) with HTML `<b>` tags, instead of `<strong>`.
-* Basic support for [Flavored autolinks](https://github.github.com/gfm/#autolinks-extension-) is included but disabled by default.
+* Basic support for [Flavored autolinks](https://github.github.com/gfm/#autolinks-extension-) is [included but disabled by default.](#byo-autolinks)
 
 Other Flavored extensions for [strikethrough](https://github.github.com/gfm/#strikethrough-extension-), [tables](https://github.github.com/gfm/#tables-extension-) and [task lists](https://github.github.com/gfm/#task-list-items-extension-) are fully supported.
 

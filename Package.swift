@@ -29,6 +29,8 @@ let package: Package = Package(name: "Downer", platforms: [
         ]),
         .target(name: "DownerUI", dependencies: [
            "Downer"
+        ], resources: [
+            .process("Assets.xcassets")
         ]),
         .testTarget(name: "DownerUITests", dependencies: [
             "DownerUI",

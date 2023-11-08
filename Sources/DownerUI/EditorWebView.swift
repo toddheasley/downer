@@ -47,6 +47,8 @@ extension EditorWebView {
                 webView?.evaluateJavaScript("toggleItalic()")
             case .toggleStrikethrough:
                 webView?.evaluateJavaScript("toggleStrikethrough()")
+            default:
+                break
             }
         }
         
@@ -102,7 +104,7 @@ extension EditorWebView {
             switch message.body as? String {
             case "load":
                 setHTML()
-            case "blur", "selectionchange":
+            case "blur", "focus", "selectionchange":
                 getState()
             case "click":
                 getState { state in

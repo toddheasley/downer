@@ -3,26 +3,14 @@ import SwiftUI
 extension EdgeInsets: StyleConvertible {
     static var `default`: Self {
 #if os(macOS)
-        return Self(8.0, 10.0, 8.0, 11.0)
+        return Self(top: 8.0, leading: 10.0, bottom: 8.0, trailing: 11.0)
 #else
-        return Self(8.0, 8.0, 24.0, 8.0)
+        return Self(top: 8.0, leading: 8.0, bottom: 24.0, trailing: 8.0)
 #endif
     }
     
-    static var toolbar: Self {
-        return Self(8.0, Self.default.leading, 8.0, Self.default.trailing)
-    }
-    
     static var popover: Self {
-        return Self(11.0)
-    }
-    
-    init(_ top: CGFloat = 0.0, _ leading: CGFloat = 0.0, _ bottom: CGFloat = 0.0, _ trailing: CGFloat = 0.0) {
-        self.init(top: top, leading: leading, bottom: bottom, trailing: trailing)
-    }
-    
-    init(_ all: CGFloat) {
-        self.init(all, all, all, all)
+        return Self(top: 11.0, leading: 11.0, bottom: 11.0, trailing: 11.0)
     }
     
     // MARK: StyleConvertible
@@ -39,6 +27,7 @@ extension EdgeInsets: StyleConvertible {
 }
 
 extension CGFloat: StyleConvertible {
+    static let spacing: Self = 8.0
     
     // MARK: StyleConvertible
     var styleDescription: String {

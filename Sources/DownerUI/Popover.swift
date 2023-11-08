@@ -4,7 +4,7 @@ extension View {
     func popover<Content: View>(_ title: String, isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> Content) -> some View {
         popover(isPresented: isPresented) {
             Popover(title, isPresented: isPresented, content: content)
-                .frame(minWidth: 180.0)
+                .frame(minWidth: 192.0, maxWidth: 384.0)
                 .presentationCompactAdaptation(.popover)
         }
     }
@@ -28,14 +28,20 @@ struct Popover<Content: View>: View {
             HStack {
                 Text(title)
                     .font(.system(.title2, weight: .semibold))
+                    .padding(.leading, 4.5)
                 Spacer()
                 CloseButton {
                     isPresented.toggle()
                 }
             }
+            .padding(.popover)
             content()
         }
-        .padding(.popover)
+#if os(macOS)
+        .onExitCommand {
+            isPresented.toggle()
+        }
+#endif
     }
 }
 
