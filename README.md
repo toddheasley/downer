@@ -13,7 +13,7 @@ Written in [Swift](https://developer.apple.com/swift) 5.9 for Apple stuff:
 
 Build with [Xcode](https://developer.apple.com/xcode) 15 or newer. Command-line interface depends on [Swift Argument Parser.](https://github.com/apple/swift-argument-parser)
 
-## WYSIWYG WIP ![EXPERIMENTAL](docs/experimental-large.svg)
+## WYSIWYG WIP
 
 `DownerUI.EditorView` is a [WYSIWYG](https://en.wikipedia.org/wiki/WYSIWYG) Markdown editor for iOS/iPadOS and macOS apps. It's like if SwiftUI `TextEditor` edited plain Markdown/HTML strings instead of attributed strings.
 
@@ -93,7 +93,7 @@ toddheasley % ls
 README.html	README.md	README~.md
 ```
 
-![EXPERIMENTAL](docs/experimental-small.svg) Use `--convert` to convert HTML in source file to Markdown syntax when possible:
+![](docs/experimental.svg) Use `--convert` to convert HTML in source file to Markdown syntax when possible:
 
 ```zsh
 toddheasley % ./downer-cli README.md -c
