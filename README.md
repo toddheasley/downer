@@ -15,17 +15,25 @@ Build with [Xcode](https://developer.apple.com/xcode) 15 or newer. Command-line 
 
 ## WYSIWYG WIP ![EXPERIMENTAL](docs/experimental-large.svg)
 
-
-
+`DownerUI.EditorView` is a [WYSIWYG](https://en.wikipedia.org/wiki/WYSIWYG) Markdown editor for iOS/iPadOS and macOS apps. It's like if SwiftUI `TextEditor` edited plain Markdown/HTML strings instead of attributed strings.
 
 ![](docs/downer.png)
 
-`EditorView` is a SwiftUI 
+### Examples
 
 ```swift
 import SwiftUI
 import DownerUI
 import Downer
+
+@main
+struct App: SwiftUI.App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
 
 struct ContentView: View {
     @State private var editor: Editor = Editor(document, baseURL: baseURL)
@@ -39,10 +47,35 @@ struct ContentView: View {
             }
     }
 }
+
+#Preview("Content View") {
+    ContentView()
+}
+
+private let baseURL: URL? = URL(string: "https://toddheasley.github.io")
+
+private let document: Downer.Document = """
+# [Think different](https://apple.com)
+
+## Here’s to the crazy ones.
+
+1. The misfits
+2. The rebels
+3. The troublemakers
+
+The round pegs in the square holes. The ones who see things differently. They’re not fond of rules. And they have no respect for the status quo. You can `quote` them, disagree with them, glorify or vilify them. About the only thing you can’t do is ignore them. Because they change things.
+
+__They push the human race forward__.
+
+And while some may see them as the crazy ones, we see genius. Because the people who are crazy enough to think they can change the world, are the ones who do.
+
+![](favicon.ico)
+"""
 ```
 
+### Acknowledgments
 
-
+`EditorView` is my own design, so far, but I cribbed a lot of the "how" from the impressively complete, functionally adjacent [MarkupEditor](https://github.com/stevengharris/MarkupEditor) by [Steve Harris.](https://github.com/stevengharris)
 
 ## Command-Line Interface
 
