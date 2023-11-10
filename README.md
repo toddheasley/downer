@@ -19,7 +19,7 @@ Build with [Xcode](https://developer.apple.com/xcode) 15 or newer. Command-line 
 
 ![](docs/downer.png)
 
-Please god, don't use `EditorView` for anything "real" yet. I have enumerated the ways it is _not_ ready for production:
+Please, _god_, don't use `EditorView` for anything "real" yet. I have enumerated the ways it is not ready for production:
 
 #### Editor API and Customization/Extension
 - [x] Editor content complete styling control with CSS, configurable in editor public interface
@@ -42,7 +42,7 @@ Please god, don't use `EditorView` for anything "real" yet. I have enumerated th
 - [ ] Toggle inline code [#8](https://github.com/toddheasley/downer/issues/8)
 - [x] Toggle numbered/ordered list
 - [x] Toggle bulleted list
-- [ ] Insert table (UI TBD: adjustable if possible, pre-sized otherwise) [#13](https://github.com/toddheasley/downer/issues/13)👀
+- [ ] Insert table (UI TBD: adjustable if possible, pre-sized otherwise) [#13](https://github.com/toddheasley/downer/issues/13) 👀
 - [ ] Insert pre-formatted code block [#8](https://github.com/toddheasley/downer/issues/8)
 - [ ] Insert checkbox/checklist item [#12](https://github.com/toddheasley/downer/issues/12)
 - [ ] Toggle block quote [#11](https://github.com/toddheasley/downer/issues/11)
