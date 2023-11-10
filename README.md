@@ -35,7 +35,7 @@ Please, _god_, don't use `EditorView` for anything "real" yet. I have enumerated
 #### GFM Features
 - [ ] Create link with URL/unlink (menu `cmd+k`) [#2](https://github.com/toddheasley/downer/issues/2)
 - [x] Insert image with URL
-- [x] Insert image picked from files/photos/camera (if camera) [#3](https://github.com/toddheasley/downer/issues/3) [#4](https://github.com/toddheasley/downer/issues/4)
+- [ ] Insert image picked from files/photos/camera (if camera) [#3](https://github.com/toddheasley/downer/issues/3) [#4](https://github.com/toddheasley/downer/issues/4)
 - [x] Toggle bold (menu `cmd+b`)
 - [x] Toggle italic (menu `cmd+i`)
 - [x] Toggle strikethrough
