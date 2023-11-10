@@ -21,34 +21,34 @@ Build with [Xcode](https://developer.apple.com/xcode) 15 or newer. Command-line 
 
 Please god, don't use `EditorView` for anything "real" yet. I have enumerated the ways it is _not_ ready for production:
 
-### Editor API and Customization/Extension
-[x] Editor content complete styling control with CSS, configurable in editor public interface
-[x] Provided default editor stylesheet with system look-and-feel and applying dynamic system margins, usable as template for custom stylesheet
-[ ] `@Observable` state and functions for document focus and selection [#1](https://github.com/toddheasley/downer/issues/1)
+#### Editor API and Customization/Extension
+- [x] Editor content complete styling control with CSS, configurable in editor public interface
+- [x] Provided default editor stylesheet with system look-and-feel and applying dynamic system margins, usable as template for custom stylesheet
+- [ ] `@Observable` state and functions for document focus and selection [#1](https://github.com/toddheasley/downer/issues/1)
 
-### System Basics
-[x] [Dynamic Type](https://developer.apple.com/documentation/uikit/uifont/scaling_fonts_automatically) for editor document content via named system CSS values
-[x] Editor content respect light/dark environment appearance via CSS media query
-[ ] Editor content respect high-contrast environment via CSS media query [#14](https://github.com/toddheasley/downer/issues/14)
-[ ] [VoiceOver](https://developer.apple.com/documentation/accessibility/supporting_voiceover_in_your_app) operation for all editor actions and content [#5](https://github.com/toddheasley/downer/issues/5) [#6](https://github.com/toddheasley/downer/issues/6)
+#### System Basics
+- [x] [Dynamic Type](https://developer.apple.com/documentation/uikit/uifont/scaling_fonts_automatically) for editor document content via named system CSS values
+- [x] Editor content respect light/dark environment appearance via CSS media query
+- [ ] Editor content respect high-contrast environment via CSS media query [#14](https://github.com/toddheasley/downer/issues/14)
+- [ ] [VoiceOver](https://developer.apple.com/documentation/accessibility/supporting_voiceover_in_your_app) operation for all editor actions and content [#5](https://github.com/toddheasley/downer/issues/5) [#6](https://github.com/toddheasley/downer/issues/6)
 
-### GFM Features
-[ ] Create link with URL/unlink (menu `cmd+k`) [#2](https://github.com/toddheasley/downer/issues/2)
-[x] Insert image with URL
-[x] Insert image picked from files/photos/camera (if camera) [#3](https://github.com/toddheasley/downer/issues/3) [#4](https://github.com/toddheasley/downer/issues/4)
-[x] Toggle bold (menu `cmd+b`)
-[x] Toggle italic (menu `cmd+i`)
-[x] Toggle strikethrough
-[ ] Toggle inline code [#8](https://github.com/toddheasley/downer/issues/8)
-[x] Toggle numbered/ordered list
-[x] Toggle bulleted list
-[ ] Insert table (UI TBD: adjustable if possible, pre-sized otherwise) [#13](https://github.com/toddheasley/downer/issues/13)👀
-[ ] Insert pre-formatted code block [#8](https://github.com/toddheasley/downer/issues/8)
-[ ] Insert checkbox/checklist item [#12](https://github.com/toddheasley/downer/issues/12)
-[ ] Toggle block quote [#11](https://github.com/toddheasley/downer/issues/11)
-[ ] Insert heading (1-6) [#10](https://github.com/toddheasley/downer/issues/10)
-[ ] Insert ruled theme break [#9](https://github.com/toddheasley/downer/issues/9)
-[ ] Insert line break [#9](https://github.com/toddheasley/downer/issues/9)
+#### GFM Features
+- [ ] Create link with URL/unlink (menu `cmd+k`) [#2](https://github.com/toddheasley/downer/issues/2)
+- [x] Insert image with URL
+- [x] Insert image picked from files/photos/camera (if camera) [#3](https://github.com/toddheasley/downer/issues/3) [#4](https://github.com/toddheasley/downer/issues/4)
+- [x] Toggle bold (menu `cmd+b`)
+- [x] Toggle italic (menu `cmd+i`)
+- [x] Toggle strikethrough
+- [ ] Toggle inline code [#8](https://github.com/toddheasley/downer/issues/8)
+- [x] Toggle numbered/ordered list
+- [x] Toggle bulleted list
+- [ ] Insert table (UI TBD: adjustable if possible, pre-sized otherwise) [#13](https://github.com/toddheasley/downer/issues/13)👀
+- [ ] Insert pre-formatted code block [#8](https://github.com/toddheasley/downer/issues/8)
+- [ ] Insert checkbox/checklist item [#12](https://github.com/toddheasley/downer/issues/12)
+- [ ] Toggle block quote [#11](https://github.com/toddheasley/downer/issues/11)
+- [ ] Insert heading (1-6) [#10](https://github.com/toddheasley/downer/issues/10)
+- [ ] Insert ruled theme break [#9](https://github.com/toddheasley/downer/issues/9)
+- [ ] Insert line break [#9](https://github.com/toddheasley/downer/issues/9)
 
 ### Examples
 
