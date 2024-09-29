@@ -1,3 +1,4 @@
+#if !os(watchOS) && !os(tvOS)
 import SwiftUI
 
 struct LinkMenu: View {
@@ -72,3 +73,4 @@ struct LinkMenu: View {
     LinkMenu()
         .environment(Editor())
 }
+#endif

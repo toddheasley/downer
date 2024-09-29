@@ -1,3 +1,4 @@
+#if !os(watchOS) && !os(tvOS)
 import SwiftUI
 
 struct ImageMenu: View {
@@ -42,3 +43,4 @@ struct ImageMenu: View {
     ImageMenu()
         .environment(Editor())
 }
+#endif

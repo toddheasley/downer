@@ -1,3 +1,4 @@
+#if !os(watchOS) && !os(tvOS)
 import SwiftUI
 import Downer
 
@@ -19,7 +20,7 @@ struct URLField: View {
     var body: some View {
         TextField("URL", text: $text, prompt: Text(prompt))
             .textFieldStyle(.roundedBorder)
-#if canImport(UIKit)
+#if os(iOS)
             .textInputAutocapitalization(.never)
             .keyboardType(.URL)
 #endif
@@ -45,3 +46,4 @@ private extension SwiftUI.Text {
         self = Self(prompt)
     }
 }
+#endif

@@ -17,7 +17,7 @@ struct Main: ParsableCommand {
     var replace: Bool = false
     
     // MARK: ParsableCommand
-    static var configuration = CommandConfiguration(commandName: "\(Bundle.main.executableURL!.lastPathComponent)",
+    nonisolated(unsafe) static var configuration = CommandConfiguration(commandName: "\(Bundle.main.executableURL!.lastPathComponent)",
         abstract: "Process individual Markdown files.")
     
     func run() throws {

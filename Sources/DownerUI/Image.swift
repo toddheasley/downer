@@ -11,7 +11,7 @@ extension Image {
         return Self(systemName: href != nil ? "link" : "link.badge.plus")
     }
     
-    static func editor(_ action: Editor.Action, size: CGSize) -> some View {
+    @MainActor static func editor(_ action: Editor.Action, size: CGSize) -> some View {
         switch action {
         case .insertThemeBreak: // Swap symbol for shape
             return AnyView(ZStack(alignment: .top) {
@@ -30,7 +30,7 @@ extension Image {
         }
     }
     
-    func editor(_ contentMode: ContentMode? = .fit, size: CGSize) -> some View {
+    @MainActor func editor(_ contentMode: ContentMode? = .fit, size: CGSize) -> some View {
         return resizable()
             .aspectRatio(contentMode: contentMode)
             .frame(width: size.width, height: size.height)

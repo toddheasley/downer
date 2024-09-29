@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Autolink: Equatable, CustomStringConvertible {
+public struct Autolink: Equatable, Sendable, CustomStringConvertible {
     public static let link: Self = Self("Link", "(?<!\")(https?:\\/\\/)([\\w\\-\\.!~?&+\\*'\"(),\\/]+)", "<a href=\"$1$2\">$2</a>")
     public static let email: Self = Self("Email", "(?<!\")(mailto:)([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4})", "<a href=\"$1$2\">$2</a>")
     

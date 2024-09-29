@@ -24,7 +24,7 @@ public struct Document: Element, ExpressibleByStringLiteral {
         elements = Self(value)?.elements ?? []
     }
 }
-#if canImport(SwiftUI)
+#if canImport(SwiftUI) && !os(watchOS) && !os(tvOS)
 
 import SwiftUI
 import UniformTypeIdentifiers

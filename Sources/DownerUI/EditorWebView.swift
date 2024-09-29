@@ -1,3 +1,4 @@
+#if !os(watchOS) && !os(tvOS)
 import SwiftUI
 import WebKit
 import Downer
@@ -18,7 +19,7 @@ struct EditorWebView {
 }
 
 extension EditorWebView {
-    class Coordinator: NSObject, EditorDelegate, WKNavigationDelegate, WKScriptMessageHandler {
+    class Coordinator: NSObject, @preconcurrency EditorDelegate, WKNavigationDelegate, WKScriptMessageHandler {
         var webView: WKWebView?
         
         init(_ parent: EditorWebView) {
@@ -127,7 +128,7 @@ extension EditorWebView: UIViewRepresentable {
     
     // MARK: UIViewRepresentable
     func makeUIView(context: Context) -> WKWebView {
-        let webView: WKWebView = WebView()
+        let webView: WKWebView = WKWebView()
         webView.configuration.userContentController.add(context.coordinator, name: name)
         webView.navigationDelegate = context.coordinator
         context.coordinator.webView = webView
@@ -145,6 +146,7 @@ extension EditorWebView: UIViewRepresentable {
         return Coordinator(self)
     }
 }
+#if !os(visionOS)
 
 private class WebView: WKWebView {
     
@@ -153,6 +155,7 @@ private class WebView: WKWebView {
         return nil
     }
 }
+#endif
 
 #elseif canImport(Cocoa)
 extension EditorWebView: NSViewRepresentable {
@@ -183,3 +186,4 @@ extension EditorWebView: NSViewRepresentable {
     EditorWebView("Placeholder")
         .environment(Editor())
 }
+#endif

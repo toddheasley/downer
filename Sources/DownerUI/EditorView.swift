@@ -1,3 +1,4 @@
+#if !os(watchOS) && !os(tvOS)
 import SwiftUI
 import Downer
 
@@ -32,17 +33,18 @@ public struct EditorView: View {
 }
 
 #Preview("Editor View") {
-    @State var editor: Editor = Editor()
+    @Previewable @State var editor: Editor = Editor()
     return EditorView("Placeholder")
         .environment(editor)
 }
 
 private extension Alignment {
     static var toolbar: Self {
-#if canImport(UIKit)
-        return bottom
-#else
+#if os(macOS)
         return .topTrailing
+#else
+        return .bottom
 #endif
     }
 }
+#endif

@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct Stylesheet: CustomStringConvertible {
+public struct Stylesheet: Sendable, CustomStringConvertible {
     public static let webkit: Self = Self("WebKit", description: "")
     public static let `default`: Self = .default(.default)
     

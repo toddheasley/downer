@@ -26,18 +26,12 @@ protocol EditorDelegate {
         delegate?.focus()
     }
     
-    public func blur() {
-#if canImport(UIKit)
+    @MainActor public func blur() {
+#if canImport(UIKit) && !os(watchOS)
         UIApplication.shared.blur()
 #else
         fatalError("blur() has not been implemented")
 #endif
-    }
-    
-    var delegate: EditorDelegate?
-    
-    func open(_ url: URL) {
-        delegate?.open(url)
     }
     
     public convenience init?(_ description: String, baseURL: URL? = nil) {
@@ -52,6 +46,12 @@ protocol EditorDelegate {
         self.baseURL = baseURL
     }
     
+    var delegate: EditorDelegate?
+    
+    func open(_ url: URL) {
+        delegate?.open(url)
+    }
+    
     // MARK: CustomStringConvertible
     public var description: String {
         return document.description
@@ -61,7 +61,7 @@ protocol EditorDelegate {
 extension Editor {
     
     // MARK: Action
-    public enum Action: Equatable, CaseIterable, CustomStringConvertible {
+    public enum Action: Equatable, Sendable, CaseIterable, CustomStringConvertible {
         case createLink(_ href: URL? = nil)
         case insertImage(_ src: URL? = nil), insertOrderedList, insertUnorderedList
         case toggleBold, toggleItalic, toggleStrikethrough
@@ -208,17 +208,17 @@ extension Editor {
 }
 
 extension EditorDelegate {
-    func open(_ url: URL) {
+    @MainActor func open(_ url: URL) {
 #if canImport(Cocoa)
         NSWorkspace.shared.open(url)
-#elseif canImport(UIKit)
+#elseif canImport(UIKit) && !os(watchOS)
         UIApplication.shared.open(url)
 #else
         fatalError("open(_ url:) has not been implemented")
 #endif
     }
 }
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 
 private extension UIApplication {
     func blur() {

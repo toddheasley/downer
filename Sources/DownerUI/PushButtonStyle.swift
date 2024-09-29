@@ -52,4 +52,5 @@ extension ButtonStyle where Self == PushButtonStyle {
         }
         .buttonStyle(.disabledPush)
     }
+    .padding()
 }

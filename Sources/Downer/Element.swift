@@ -1,4 +1,4 @@
-public protocol Element: CustomStringConvertible {
+public protocol Element: Sendable, CustomStringConvertible {
     static var name: String {
         get
     }

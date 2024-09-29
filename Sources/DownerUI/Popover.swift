@@ -1,3 +1,4 @@
+#if !os(watchOS) && !os(tvOS)
 import SwiftUI
 
 extension View {
@@ -50,3 +51,4 @@ struct Popover<Content: View>: View {
         EmptyView()
     }
 }
+#endif

@@ -1,6 +1,6 @@
 import UniformTypeIdentifiers
 
-public enum Format: CaseIterable, CustomStringConvertible {
+public enum Format: Sendable, CaseIterable, CustomStringConvertible {
     case hypertext(_ autolink: [Autolink]), markdown
     
     public static let hypertext: Self = .hypertext([])

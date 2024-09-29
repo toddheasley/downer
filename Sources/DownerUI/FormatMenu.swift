@@ -1,3 +1,4 @@
+#if !os(watchOS) && !os(tvOS)
 import SwiftUI
 
 struct FormatMenu: View {
@@ -165,3 +166,4 @@ private extension CGSize {
     static let medium: Self = Self(width: 44.0, height: 36.0)
     static let small: Self = Self(width: 27.0, height: 19.0)
 }
+#endif

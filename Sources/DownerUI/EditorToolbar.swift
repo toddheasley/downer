@@ -1,3 +1,4 @@
+#if !os(watchOS) && !os(tvOS)
 import SwiftUI
 
 public struct EditorToolbar: View {
@@ -161,3 +162,4 @@ private extension CGSize {
         #endif
     }
 }
+#endif

@@ -102,8 +102,8 @@ extension HTML.Conversion: CaseIterable {
 }
 
 extension HTML {
-    enum Conversion {
-        typealias Modifier = (HTML) -> String
+    enum Conversion: Sendable {
+        typealias Modifier = @Sendable (HTML) -> String
         
         case modifier(_ pattern: String, _ modifier: Modifier)
         case template(_ pattern: String, _ template: String)

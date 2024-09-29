@@ -1,3 +1,4 @@
+#if !os(tvOS)
 import SwiftUI
 
 public struct CloseButton: View {
@@ -28,3 +29,4 @@ public struct CloseButton: View {
     }
     .padding()
 }
+#endif

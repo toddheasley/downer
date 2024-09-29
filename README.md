@@ -4,14 +4,14 @@ __[Markdown](https://daringfireball.net/projects/markdown) toolkit for Swift and
 
 ### Supported Platforms
 
-Written in [Swift](https://developer.apple.com/swift) 5.9 for Apple stuff:
+Written in [Swift](https://developer.apple.com/swift) 6 for Apple stuff:
 
 * [macOS](https://developer.apple.com/macos) 14 Sonoma
 * [iOS](https://developer.apple.com/ios)/[iPadOS](https://developer.apple.com/ipad)/[tvOS](https://developer.apple.com/tvos) 17
 * [watchOS](https://developer.apple.com/watchos) 10
 * [visionOS](https://developer.apple.com/visionos)
 
-Build with [Xcode](https://developer.apple.com/xcode) 15 or newer. Command-line interface depends on [Swift Argument Parser.](https://github.com/apple/swift-argument-parser)
+Build with [Xcode](https://developer.apple.com/xcode) 16 or newer. Command-line interface depends on [Swift Argument Parser.](https://github.com/apple/swift-argument-parser)
 
 ## WYSIWYG WIP
 
