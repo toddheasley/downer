@@ -10,13 +10,9 @@ struct LinkMenu: View {
         _isPresented = isPresented
     }
     
-    private var text: String {
-        return editor.state?.selection.text ?? ""
-    }
+    private var text: String { editor.state?.selection.text ?? "" }
     
-    private var link: Editor.Link? {
-        return editor.state?.selection.link
-    }
+    private var link: Editor.Link? { editor.state?.selection.link }
     
     private func toggleLink() {
         if link != nil {

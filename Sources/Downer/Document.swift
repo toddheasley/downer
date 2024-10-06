@@ -8,7 +8,7 @@ public struct Document: Element, ExpressibleByStringLiteral {
     public let elements: [Element]
     
     public func description(_ format: Format) -> String {
-        return "\u{FEFF}\(elements.description(format).trimmingCharacters(in: .whitespacesAndNewlines))\n"
+        "\u{FEFF}\(elements.description(format).trimmingCharacters(in: .whitespacesAndNewlines))\n"
     }
     
     public init?(_ description: String) {
@@ -34,9 +34,7 @@ extension Document: FileDocument {
         case unsupported(UTType), decodingFailed, encodingFailed, generic(String)
         
         // MARK: Identifiable
-        public var id: Int {
-            return localizedDescription.hashValue
-        }
+        public var id: Int { localizedDescription.hashValue }
     }
     
     // MARK: FileDocument

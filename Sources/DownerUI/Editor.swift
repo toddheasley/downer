@@ -13,9 +13,7 @@ protocol EditorDelegate {
     public var baseURL: URL?
     
     public internal(set) var state: State? {
-        didSet {
-            isFocused = state?.isFocused ?? false
-        }
+        didSet { isFocused = state?.isFocused ?? false }
     }
     
     public func exec(_ action: Action) {
@@ -53,9 +51,7 @@ protocol EditorDelegate {
     }
     
     // MARK: CustomStringConvertible
-    public var description: String {
-        return document.description
-    }
+    public var description: String { document.description }
 }
 
 extension Editor {
@@ -162,9 +158,7 @@ extension Editor {
         }
         
         // MARK: CustomStringConvertible
-        public var description: String {
-            return text.isEmpty ? "[\(href.absoluteString)]()" : "[\(text)](\(href.absoluteString))"
-        }
+        public var description: String { text.isEmpty ? "[\(href.absoluteString)]()" : "[\(text)](\(href.absoluteString))" }
     }
     
     // MARK: Selection

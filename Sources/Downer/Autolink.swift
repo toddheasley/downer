@@ -14,10 +14,9 @@ public struct Autolink: Equatable, Sendable, CustomStringConvertible {
     }
     
     func convert(_ html: HTML) throws -> HTML {
-        let regex: NSRegularExpression = try NSRegularExpression(pattern: pattern, options: [
+        try NSRegularExpression(pattern: pattern, options: [
             .caseInsensitive
-        ])
-        return regex.stringByReplacingMatches(in: html, range: NSMakeRange(0, html.count), withTemplate: template)
+        ]).stringByReplacingMatches(in: html, range: NSMakeRange(0, html.count), withTemplate: template)
     }
     
     // MARK: CustomStringConvertible

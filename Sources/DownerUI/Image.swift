@@ -8,7 +8,7 @@ extension Image {
     static var photos: Self { Self(systemName: "photo.stack") }
     
     static func link(_ href: URL? = nil) -> Self {
-        return Self(systemName: href != nil ? "link" : "link.badge.plus")
+        Self(systemName: href != nil ? "link" : "link.badge.plus")
     }
     
     @MainActor static func editor(_ action: Editor.Action, size: CGSize) -> some View {
@@ -31,7 +31,7 @@ extension Image {
     }
     
     @MainActor func editor(_ contentMode: ContentMode? = .fit, size: CGSize) -> some View {
-        return resizable()
+        resizable()
             .aspectRatio(contentMode: contentMode)
             .frame(width: size.width, height: size.height)
     }

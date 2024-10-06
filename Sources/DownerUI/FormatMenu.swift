@@ -158,7 +158,7 @@ struct FormatMenu: View {
 
 private extension Editor {
     func isOn(_ nodeName: String?) -> Bool {
-        return nodeName == state?.selection.nodeName
+        nodeName == state?.selection.nodeName
     }
 }
 

@@ -22,9 +22,7 @@ struct ImageMenu: View {
             URLField($url, focus: true)
             HStack {
                 Spacer()
-                Button(action: {
-                    ()
-                }) {
+                Button(action: { }) {
                     Text("Insert Image")
                 }
                 .buttonStyle(.bordered)

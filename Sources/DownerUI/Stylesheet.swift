@@ -5,7 +5,7 @@ public struct Stylesheet: Sendable, CustomStringConvertible {
     public static let `default`: Self = .default(.default)
     
     public static func `default`(_ padding: EdgeInsets) -> Self {
-        return Self("Downer Default", description: _description(padding: padding))
+        Self("Downer Default", description: _description(padding: padding))
     }
     
     public let name: String

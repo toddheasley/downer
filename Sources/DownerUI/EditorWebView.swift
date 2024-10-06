@@ -151,9 +151,7 @@ extension EditorWebView: UIViewRepresentable {
 private class WebView: WKWebView {
     
     // MARK: WKWebView
-    override var inputAccessoryView: UIView? {
-        return nil
-    }
+    override var inputAccessoryView: UIView? { nil }
 }
 #endif
 

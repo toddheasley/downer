@@ -2,15 +2,11 @@
 import SwiftUI
 
 public struct EditorToolbar: View {
-    public init() {
-        
-    }
+    public init() { }
     
     @Environment(Editor.self) private var editor: Editor
     
-    private var opacity: Double {
-        return editor.isFocused ? 1.0 : 0.0
-    }
+    private var opacity: Double { editor.isFocused ? 1.0 : 0.0 }
     
     // MARK: View
     public var body: some View {

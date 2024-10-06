@@ -79,7 +79,7 @@ extension HTML.Conversion: CaseIterable {
     }
     
     static let taskList: Self = .modifier("<input.*?type=[\"']checkbox[\"'][^>]*>") { html in
-        return "[\(html.contains("checked") ? "x" : " ")] "
+        "[\(html.contains("checked") ? "x" : " ")] "
     }
     
     static let thematicBreak: Self = .template("<hr.*?>", "\n-----\n\n")

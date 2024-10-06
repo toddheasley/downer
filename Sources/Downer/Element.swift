@@ -52,13 +52,11 @@ extension Element {
     }
     
     // MARK: CustomStringConvertible
-    public var description: String {
-        return description(.markdown).trimmingCharacters(in: .whitespacesAndNewlines)
-    }
+    public var description: String { description(.markdown).trimmingCharacters(in: .whitespacesAndNewlines) }
 }
 
 extension Array where Element == Downer.Element {
     func description(_ format: Format) -> String {
-        return map { $0.description(format) }.joined()
+        map { $0.description(format) }.joined()
     }
 }

@@ -6,7 +6,7 @@ public struct Body: Element {
     public let elements: [Element]
     
     public func description(_ format: Format) -> String {
-        return elements.description(format)
+        elements.description(format)
     }
     
     public init?(_ description: String) {

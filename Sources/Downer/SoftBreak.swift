@@ -8,7 +8,7 @@ public struct SoftBreak: Element {
     public let elements: [Element] = []
     
     public func description(_ format: Format) -> String {
-        return " "
+        " "
     }
     
     public init?(_ description: String) {

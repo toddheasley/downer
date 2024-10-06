@@ -2,11 +2,10 @@ import Foundation
 
 extension String {
     func replacingSubstrings(matching pattern: Self, with template: Self) throws -> Self {
-        let regex: NSRegularExpression = try NSRegularExpression(pattern: pattern, options: [
+        try NSRegularExpression(pattern: pattern, options: [
             .caseInsensitive,
             .dotMatchesLineSeparators
-        ])
-        return regex.stringByReplacingMatches(in: self, range: NSMakeRange(0, count), withTemplate: template)
+        ]).stringByReplacingMatches(in: self, range: NSMakeRange(0, count), withTemplate: template)
     }
     
     func replacingSubstrings(matching pattern: Self, with modifier: (Self) -> Self) throws -> Self {
@@ -27,11 +26,10 @@ extension String {
     }
     
     func substrings(matching pattern: Self) throws -> [Self] {
-        let regex: NSRegularExpression = try NSRegularExpression(pattern: pattern, options: [
+        try NSRegularExpression(pattern: pattern, options: [
             .caseInsensitive,
             .dotMatchesLineSeparators
-        ])
-        return regex.matches(in: self, range: NSMakeRange(0, count)).compactMap { match in
+        ]).matches(in: self, range: NSMakeRange(0, count)).compactMap { match in
             guard let range: Range<Index> = Range(match.range, in: self) else {
                 return nil
             }
@@ -40,7 +38,7 @@ extension String {
     }
     
     func escapedForEval() -> Self {
-        return self.unicodeScalars.map { char in
+        unicodeScalars.map { char in
             guard (char.value < 32 && char.value != 9) || char.value == 39 else {
                 return Self(char)
             }

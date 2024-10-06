@@ -6,7 +6,7 @@ public struct Text: Element {
     public let elements: [Element] = []
     
     public func description(_ format: Format) -> String {
-        return description
+        description
     }
     
     public init?(_ description: String) {
